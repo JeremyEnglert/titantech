@@ -23,10 +23,14 @@ import { fileUploadField } from './forms/fields/file-upload'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Vercel's MongoDB Atlas integration injects MONGODB_URI; the project's own
-// convention (and every other Materiell site) is DATABASE_URI. Accept either
-// rather than renaming one of them.
-const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || ''
+// DATABASE_URI is the project's own convention (and every other Materiell
+// site); Vercel's Atlas integration injects MONGODB_URI regardless of the
+// prefix chosen when connecting. MONGODB_URL is accepted too because the
+// connect dialog presents the name as `<PREFIX>_URL`, so a future reconnect
+// could plausibly land there. Reading all three beats copying a connection
+// string into a second variable that then drifts.
+const databaseUri =
+  process.env.DATABASE_URI || process.env.MONGODB_URI || process.env.MONGODB_URL || ''
 
 // Media lives on Vercel Blob in every deployed environment. Locally the token
 // is usually absent, and falling back to disk means `pnpm seed:media` works on
