@@ -19,7 +19,8 @@
     "seed:services": "tsx scripts/seed-services.ts",
     "seed:contact": "tsx scripts/seed-contact.ts",
     "seed:quote": "tsx scripts/seed-quote.ts",
-    "seed:all": "tsx scripts/seed-all.ts"
+    "seed:all": "tsx scripts/seed-all.ts",
+    "seed:all:production": "SEED_TARGET=production tsx scripts/seed-all.ts"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "^3.88.0",

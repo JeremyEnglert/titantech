@@ -3,7 +3,25 @@ import { existsSync, rmSync } from 'node:fs'
 
 import { config as loadEnv } from 'dotenv'
 
-loadEnv()
+/**
+ * Seeds write real content, so which database they hit is not something to
+ * leave to whatever `.env` happens to contain. `SEED_TARGET=production` is an
+ * explicit opt-in that reads the credentials `vercel env pull` wrote; anything
+ * else stays on the local `.env`.
+ */
+const seedTarget = process.env.SEED_TARGET
+const envFile = seedTarget === 'production' ? '.env.production.local' : '.env'
+
+if (seedTarget === 'production' && !existsSync(path.resolve(process.cwd(), envFile))) {
+  console.error(`Missing ${envFile}. Run: npx vercel env pull ${envFile} --environment=production`)
+  process.exit(1)
+}
+
+loadEnv({ path: envFile })
+
+if (seedTarget === 'production') {
+  console.log('  ⚠ seeding PRODUCTION\n')
+}
 
 /**
  * Env must be loaded before payload.config is evaluated — the config reads

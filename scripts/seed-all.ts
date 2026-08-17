@@ -14,7 +14,9 @@ const steps = [
 ]
 
 for (const step of steps) {
-  const result = spawnSync('pnpm', [step], { stdio: 'inherit' })
+  // SEED_TARGET has to reach each child, or seed:all would target
+  // production while every step it spawns quietly seeded local.
+  const result = spawnSync('pnpm', [step], { stdio: 'inherit', env: process.env })
   if (result.status !== 0) {
     console.error(`\n${step} failed — stopping.`)
     process.exit(result.status ?? 1)
