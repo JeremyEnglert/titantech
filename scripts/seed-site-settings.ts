@@ -14,8 +14,10 @@ const settings = {
     city: 'Tucson',
     state: 'AZ',
     zip: '85706',
-    latitude: 32.1,
-    longitude: -110.9,
+    // Geocoded from the street address (Nominatim), not the design's rounded
+    // 32.1°N / 110.9°W eyebrow — that is ~3km out and would pin the wrong block.
+    latitude: 32.1340845,
+    longitude: -110.9648856,
   },
   hours: {
     days: 'Mon–Fri',
@@ -23,8 +25,6 @@ const settings = {
     close: '5:00pm',
     schemaHours: 'Mo-Fr 07:00-17:00',
   },
-  mapEmbedUrl:
-    'https://www.google.com/maps?q=227+E+Valencia+Rd+Ste+230,+Tucson,+AZ+85706&output=embed',
 }
 
 runSeed('Seed site settings', async () => {

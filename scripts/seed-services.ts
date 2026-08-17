@@ -1,10 +1,19 @@
 import { quoteCtaBand, serviceCardRows, services, statItems } from './lib/content'
+import { findMediaId, photoStems } from './lib/find-media'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
 import { upsertPage } from './lib/upsert-page'
 
 runSeed('Seed services page', async () => {
   const payload = await getSeedPayload()
+
+  // Pair each capability with the machine that actually performs it, rather
+  // than decorating every section with the same photo.
+  const byAnchor: Record<string, string | null> = {
+    'three-axis-milling': await findMediaId(payload, photoStems.mill),
+    'multi-axis-machining': await findMediaId(payload, photoStems.fiveAxis),
+    'cnc-turning': await findMediaId(payload, photoStems.lathe),
+  }
 
   await upsertPage(payload, {
     slug: 'services',
@@ -36,6 +45,7 @@ runSeed('Seed services page', async () => {
       ...services.flatMap((service, index) => [
         {
           blockType: 'mediaWithText' as const,
+          image: byAnchor[service.anchor] ?? undefined,
           imagePosition: index % 2 === 0 ? ('left' as const) : ('right' as const),
           eyebrow: `0${index + 1}`,
           title: service.title,

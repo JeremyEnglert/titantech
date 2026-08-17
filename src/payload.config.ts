@@ -37,6 +37,10 @@ const resendKey = process.env.RESEND_API_KEY
 export default buildConfig({
   admin: {
     user: Users.slug,
+    // Payload defaults to Gravatar, which sends a hash of every admin user's
+    // email to gravatar.com on each page load. `default` uses the built-in
+    // initials avatar instead — no third-party request.
+    avatar: 'default',
     importMap: {
       baseDir: path.resolve(dirname),
     },

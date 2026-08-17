@@ -915,9 +915,9 @@ export interface Page {
                 }[]
               | null;
             /**
-             * Optional. Paste only the src URL from a Google Maps embed, not the whole iframe tag. Leave empty to show a placeholder.
+             * Draws a muted dark map centred on the address in Site Settings, with a "Get directions" link.
              */
-            mapEmbedUrl?: string | null;
+            showMap?: boolean | null;
             /**
              * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
              */
@@ -1866,7 +1866,7 @@ export interface PagesSelect<T extends boolean = true> {
                         };
                     id?: T;
                   };
-              mapEmbedUrl?: T;
+              showMap?: T;
               background?: T;
               topDivider?: T;
               joinPrevious?: T;
@@ -2332,10 +2332,6 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
-  /**
-   * The src of a Google Maps embed iframe. Leave blank to hide the map.
-   */
-  mapEmbedUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2374,7 +2370,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
-  mapEmbedUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

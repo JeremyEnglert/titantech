@@ -5,12 +5,17 @@ import {
   statItems,
   valuePropItems,
 } from './lib/content'
+import { findMediaId, photoStems } from './lib/find-media'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
 import { upsertPage } from './lib/upsert-page'
 
 runSeed('Seed home page', async () => {
   const payload = await getSeedPayload()
+
+  // The five-axis is the flagship machine, so it carries the hero.
+  const fiveAxis = await findMediaId(payload, photoStems.fiveAxis)
+  const mill = await findMediaId(payload, photoStems.mill)
 
   await upsertPage(payload, {
     slug: 'home',
@@ -44,6 +49,7 @@ runSeed('Seed home page', async () => {
             variant: 'outline',
           },
         ],
+        image: fiveAxis,
         background: 'none',
         topDivider: false,
       },
@@ -69,6 +75,7 @@ runSeed('Seed home page', async () => {
         body: textToLexical(
           "We're a family-run machine shop in Tucson with 20+ years of combined experience behind the spindle. Big enough to hold real tolerances on automotive and general parts — small enough to actually pick up the phone.",
         ),
+        image: mill,
         items: valuePropItems,
         background: 'tint',
         topDivider: true,
@@ -87,6 +94,7 @@ runSeed('Seed home page', async () => {
         eyebrow: 'Contact',
         title: 'Get in touch',
         cards: contactCardRows,
+        showMap: true,
         background: 'deep',
         topDivider: true,
         blockSettings: { anchorId: 'contact' },

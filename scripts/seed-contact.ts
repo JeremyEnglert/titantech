@@ -1,4 +1,4 @@
-import { contactCardRows, mapEmbedUrl } from './lib/content'
+import { contactCardRows } from './lib/content'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
 import { upsertPage } from './lib/upsert-page'
@@ -36,7 +36,7 @@ runSeed('Seed contact page', async () => {
       {
         blockType: 'contactCards',
         cards: contactCardRows,
-        mapEmbedUrl,
+        showMap: true,
         background: 'deep',
         topDivider: false,
       },

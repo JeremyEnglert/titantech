@@ -2,6 +2,7 @@ import React from 'react'
 
 import { CMSLink } from '@/components/cms-link'
 import { Icon, type IconName } from '@/components/icons'
+import { LocationMap } from '@/components/location-map'
 import { Eyebrow, SectionTitle } from '@/components/section-heading'
 import { SectionShell } from '@/components/section-shell'
 import type { SectionBackground } from '@/fields/section-settings'
@@ -28,7 +29,7 @@ export type ContactCardsProps = {
   eyebrow?: string | null
   title?: string | null
   cards?: ContactCard[] | null
-  mapEmbedUrl?: string | null
+  showMap?: boolean | null
   background?: SectionBackground | null
   topDivider?: boolean | null
   joinPrevious?: boolean | null
@@ -43,13 +44,21 @@ export function ContactCards({
   eyebrow,
   title,
   cards,
-  mapEmbedUrl,
+  showMap,
   background,
   topDivider,
   joinPrevious,
 }: ContactCardsProps) {
   const rows = cards?.filter(Boolean) ?? []
-  const mapSrc = mapEmbedUrl?.trim()
+
+  const columnClasses =
+    rows.length === 1
+      ? 'md:grid-cols-1'
+      : rows.length === 3
+        ? 'lg:grid-cols-3'
+        : rows.length >= 4
+          ? 'lg:grid-cols-4'
+          : 'lg:grid-cols-2'
 
   return (
     <SectionShell background={background} topDivider={topDivider} joinPrevious={joinPrevious}>
@@ -61,7 +70,10 @@ export function ContactCards({
       )}
 
       {rows.length > 0 && (
-        <div className="grid gap-px hairline bg-graphite-500/30 md:grid-cols-2 lg:grid-cols-4">
+        // The `gap-px` over the lighter surface IS the cell border, so an
+        // under-filled row shows as an empty lit cell rather than nothing.
+        // Match the column count to the cards actually present.
+        <div className={cn('grid gap-px hairline bg-graphite-500/30 md:grid-cols-2', columnClasses)}>
           {rows.map((card, index) => {
             const linked = resolveLink(card.link) !== null
 
@@ -100,24 +112,8 @@ export function ContactCards({
         </div>
       )}
 
-      {mapSrc ? (
-        <iframe
-          src={mapSrc}
-          title="Location map"
-          className="mt-px h-44 w-full hairline sm:h-56"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-      ) : (
-        <div className="relative mt-px grid h-44 place-items-center text-center hairline bg-graphite-850 sm:h-56">
-          <div className="flex flex-col items-center gap-3 px-6">
-            <Icon name="pin" className="size-8 text-steel-300" />
-            <span className="text-[11px] uppercase tracking-[0.18em] text-steel-300">
-              Map placeholder
-            </span>
-          </div>
-        </div>
-      )}
+      {showMap && <LocationMap className="mt-px h-80 w-full sm:h-[420px]" />}
+
     </SectionShell>
   )
 }

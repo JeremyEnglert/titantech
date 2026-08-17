@@ -114,9 +114,6 @@ export const contactCardRows = [
   { icon: 'pin', label: 'Location', value: '227 E Valencia Rd, Ste 230\nTucson, AZ 85706' },
 ]
 
-export const mapEmbedUrl =
-  'https://www.google.com/maps?q=227+E+Valencia+Rd+Ste+230,+Tucson,+AZ+85706&output=embed'
-
 /** The closing call-to-action band, verbatim from the design. */
 export const quoteCtaBand = {
   blockType: 'ctaBand' as const,

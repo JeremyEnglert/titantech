@@ -91,13 +91,13 @@ export const ContactCardsBlock: Block = {
               ],
             },
             {
-              name: 'mapEmbedUrl',
-              type: 'text',
-              label: 'Map Embed URL',
+              name: 'showMap',
+              type: 'checkbox',
+              label: 'Show the location map',
+              defaultValue: false,
               admin: {
                 description:
-                  'Optional. Paste only the src URL from a Google Maps embed, not the whole iframe tag. Leave empty to show a placeholder.',
-                placeholder: 'https://www.google.com/maps/embed?pb=…',
+                  'Draws a muted dark map centred on the address in Site Settings, with a "Get directions" link.',
               },
             },
           ],

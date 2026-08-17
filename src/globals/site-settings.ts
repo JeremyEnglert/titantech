@@ -95,7 +95,7 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'Social & Map',
+          label: 'Social',
           fields: [
             {
               name: 'social',
@@ -116,15 +116,6 @@ export const SiteSettings: GlobalConfig = {
                 },
                 { name: 'url', type: 'text', label: 'URL', required: true },
               ],
-            },
-            {
-              name: 'mapEmbedUrl',
-              type: 'text',
-              label: 'Map Embed URL',
-              admin: {
-                description:
-                  'The src of a Google Maps embed iframe. Leave blank to hide the map.',
-              },
             },
           ],
         },

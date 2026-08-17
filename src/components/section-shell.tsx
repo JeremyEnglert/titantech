@@ -58,6 +58,12 @@ export function SectionShell({
         // background here would clip it.
         joinPrevious && '-mt-20 pt-8 lg:-mt-28 lg:pt-10',
         topDivider && 'hairline-t',
+        // A transparent block's air is margin, which sits OUTSIDE the border —
+        // so drawing the divider leaves the first line of text jammed against
+        // the rule. Painted blocks are fine: their padding is already inside
+        // it. Give the transparent case matching interior padding so the
+        // rhythm reads gap / rule / gap / content.
+        topDivider && !painted && !joinPrevious && 'pt-20 lg:pt-28',
         className,
       )}
     >

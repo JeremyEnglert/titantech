@@ -73,5 +73,4 @@ runSeed('Seed menus', async () => {
     }
   }
 
-  console.log('  NOTE: clear .next/cache — getMenu caches to disk and survives a restart.')
 })

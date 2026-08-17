@@ -21,4 +21,4 @@ for (const step of steps) {
   }
 }
 
-console.log('\nAll seeds complete. Clear .next/cache so the menu cache picks up the new nav.')
+console.log('\nAll seeds complete.')

@@ -1,10 +1,14 @@
 import { quoteCtaBand, statItems, valuePropItems } from './lib/content'
+import { findMediaId, photoStems } from './lib/find-media'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
 import { upsertPage } from './lib/upsert-page'
 
 runSeed('Seed about page', async () => {
   const payload = await getSeedPayload()
+
+  const mill = await findMediaId(payload, photoStems.mill)
+  const lathe = await findMediaId(payload, photoStems.lathe)
 
   await upsertPage(payload, {
     slug: 'about',
@@ -26,6 +30,7 @@ runSeed('Seed about page', async () => {
       },
       {
         blockType: 'mediaWithText',
+        image: mill,
         imagePosition: 'left',
         eyebrow: 'The shop',
         title: 'Everything happens under one roof.',
@@ -42,6 +47,7 @@ runSeed('Seed about page', async () => {
         body: textToLexical(
           'A job shop lives or dies on whether it does what it said it would. These are the commitments we hold ourselves to on every part that goes out the door.',
         ),
+        image: lathe,
         items: valuePropItems,
         background: 'tint',
         topDivider: true,
