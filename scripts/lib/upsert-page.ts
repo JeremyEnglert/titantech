@@ -6,6 +6,12 @@ type PageSeed = {
   slug: string
   title: string
   content: unknown[]
+  /**
+   * Written to the `seo` tab, which is where the SEO plugin's fields actually
+   * live — `generateMeta` reads `doc.seo.title` / `doc.seo.description`.
+   * Sending these under a `meta` key instead is silently dropped by Payload,
+   * so every page ships with a bare document title and no description.
+   */
   meta?: { title?: string; description?: string }
 }
 
@@ -27,7 +33,7 @@ export async function upsertPage(payload: Payload, page: PageSeed) {
     slug: page.slug,
     content: page.content,
     _status: 'published',
-    ...(page.meta ? { meta: page.meta } : {}),
+    ...(page.meta ? { seo: page.meta } : {}),
   } as unknown as RequiredDataFromCollectionSlug<'pages'>
 
   if (existing.docs.length > 0) {
