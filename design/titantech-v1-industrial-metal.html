@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titantech CNC — Precision Machining | Tucson, AZ</title>
+  <meta name="description" content="Titantech CNC is a precision machining job shop in Tucson, AZ. 3-axis milling, 4th & 5th axis machining, CNC turning, laser engraving and custom parts to ±0.0005&quot;. Request a quote." />
+
+  <!-- ============================================================
+       FONTS — Saira Condensed (industrial display) + JetBrains Mono (spec/data)
+       Distinctive, technical, NOT Inter/Roboto/system-ui.
+       ============================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ============================================================
+       TAILWIND CDN + INLINE THEME CONFIG
+       ============================================================ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Near-black graphite base + brushed-steel grays
+            graphite: {
+              900: '#0b0c0e',   // deepest base
+              850: '#0e0f12',
+              800: '#121317',
+              700: '#181a1f',
+              600: '#1f2228',
+              500: '#272b33',
+              400: '#363b45',
+            },
+            steel: {
+              300: '#7c828d',   // mid brushed steel
+              200: '#9aa1ac',
+              100: '#c3c9d2',
+              50:  '#e6e9ee',
+            },
+            // ONE hot accent — Titantech brand red (sampled from their logo: #d02828)
+            ember: {
+              DEFAULT: '#d62828',
+              soft: '#e23b3b',
+              deep: '#a81f1f',
+            },
+          },
+          fontFamily: {
+            display: ['"Saira Condensed"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          // Resolve the existing numeric font-weight utilities (font-700/800/900).
+          // Without these keys Tailwind emits ZERO css for them and every display
+          // headline silently falls back to 400 — gutting the "heavy" intent.
+          fontWeight: {
+            700: '700',
+            800: '800',
+            900: '900',
+          },
+          letterSpacing: {
+            wider2: '0.18em',
+            wider3: '0.32em',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root { --ember: #d62828; }
+
+    html, body { background-color: #0b0c0e; }
+
+    /* Display headlines: enable optical sizing + tighter, balanced wrapping.
+       Saira Condensed reads better with a hair of negative tracking at weight. */
+    .font-display { text-wrap: balance; font-feature-settings: "tnum" 1; }
+    /* Tabular figures everywhere numbers matter (specs, stats) stay column-aligned. */
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+    /* ---- Machined grid / CAD blueprint background ---- */
+    .bg-machined {
+      background-color: #0b0c0e;
+      background-image:
+        linear-gradient(rgba(124,130,141,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,130,141,0.045) 1px, transparent 1px);
+      background-size: 56px 56px;
+      background-position: -1px -1px;
+    }
+    .bg-crosshatch {
+      background-image:
+        linear-gradient(rgba(124,130,141,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,130,141,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(124,130,141,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,130,141,0.025) 1px, transparent 1px);
+      background-size: 112px 112px, 112px 112px, 28px 28px, 28px 28px;
+    }
+
+    /* ---- Fine film grain / noise overlay (CSS-only, no external image) ---- */
+    .grain::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.5;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ---- Brushed-steel metallic sheen ---- */
+    .steel-sheen {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 18%, rgba(0,0,0,0.25) 100%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 3px),
+        linear-gradient(120deg, #1c1f25 0%, #14161a 40%, #1a1d22 70%, #101216 100%);
+    }
+
+    /* ---- Hot ember edge glow used sparingly ---- */
+    .ember-glow { box-shadow: 0 0 0 1px rgba(214,40,40,0.35), 0 0 28px -6px rgba(214,40,40,0.45); }
+
+    /* ---- Primary CTA: machined-button micro-interaction (lift + glow + press) ---- */
+    .btn-ember {
+      transition: background-color .2s ease, box-shadow .25s ease, transform .12s ease;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 10px 24px -14px rgba(214,40,40,0.6);
+    }
+    .btn-ember:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 14px 30px -12px rgba(214,40,40,0.75); transform: translateY(-1px); }
+    .btn-ember:active { transform: translateY(0); }
+
+    /* ---- Secondary CTA: hairline button with subtle ember wash on hover ---- */
+    .btn-ghost { transition: border-color .2s ease, color .2s ease, background-color .2s ease, transform .12s ease; }
+    .btn-ghost:hover { transform: translateY(-1px); }
+    .btn-ghost:active { transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn-ember, .btn-ghost { transform: none !important; }
+    }
+
+    /* ---- Hairline CAD borders ---- */
+    .hairline { border: 1px solid rgba(124,130,141,0.18); }
+    .hairline-t { border-top: 1px solid rgba(124,130,141,0.18); }
+    .hairline-b { border-bottom: 1px solid rgba(124,130,141,0.18); }
+
+    /* ---- Staggered page-load reveal ---- */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal-load { opacity: 0; animation: riseIn 0.8s cubic-bezier(.2,.7,.2,1) forwards; }
+    .d1 { animation-delay: .05s; } .d2 { animation-delay: .18s; }
+    .d3 { animation-delay: .31s; } .d4 { animation-delay: .44s; }
+    .d5 { animation-delay: .57s; } .d6 { animation-delay: .70s; }
+
+    /* ---- Scroll-triggered reveal (JS adds .in) ---- */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---- Focus-visible: strong, accessible ember ring ---- */
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--ember);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-load, .reveal { animation: none !important; opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-machined text-steel-100 font-mono antialiased selection:bg-ember selection:text-graphite-900">
+
+  <!-- skip link for accessibility -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:z-[60] focus:top-3 focus:left-3 focus:bg-ember focus:text-graphite-900 focus:px-4 focus:py-2 focus:font-bold focus:uppercase focus:tracking-wider">Skip to content</a>
+
+  <!-- ============================================================
+       HEADER / STICKY NAV
+       ============================================================ -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-graphite-900/85 hairline-b">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <nav class="flex items-center justify-between h-[68px]" aria-label="Primary">
+
+        <!-- Logo — faithful inline-SVG recreation of the Titantech CNC mark (white wordmark, transparent bg) -->
+        <a href="#home" class="group flex items-center gap-3" aria-label="Titantech CNC home">
+          <span class="relative grid place-items-center w-10 h-10 shrink-0 text-ember transition-transform duration-300 group-hover:scale-105">
+            <svg viewBox="0 0 100 100" class="w-full h-full" aria-hidden="true">
+              <!-- gear ring -->
+              <g fill="currentColor">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="7"/>
+                <!-- gear teeth -->
+                <g>
+                  <rect x="46" y="2" width="8" height="12" rx="1"/>
+                  <rect x="46" y="86" width="8" height="12" rx="1"/>
+                  <rect x="2" y="46" width="12" height="8" rx="1"/>
+                  <rect x="86" y="46" width="12" height="8" rx="1"/>
+                  <rect x="46" y="2" width="8" height="12" rx="1" transform="rotate(45 50 50)"/>
+                  <rect x="46" y="86" width="8" height="12" rx="1" transform="rotate(45 50 50)"/>
+                  <rect x="46" y="2" width="8" height="12" rx="1" transform="rotate(-45 50 50)"/>
+                  <rect x="46" y="86" width="8" height="12" rx="1" transform="rotate(-45 50 50)"/>
+                </g>
+              </g>
+              <!-- bar-chart / skyline motif (tallest center) -->
+              <g fill="currentColor">
+                <rect x="46" y="30" width="8" height="40" rx="1"/>
+                <rect x="34" y="40" width="8" height="30" rx="1"/>
+                <rect x="58" y="40" width="8" height="30" rx="1"/>
+              </g>
+              <!-- tunnel / road perspective beneath the bars -->
+              <path d="M22 74 L40 56 H60 L78 74" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="leading-none">
+            <span class="block font-display font-800 text-steel-50 text-lg tracking-[0.12em] uppercase">Titantech</span>
+            <span class="block text-[10px] text-ember tracking-[0.5em] uppercase mt-0.5">C N C</span>
+          </span>
+        </a>
+
+        <!-- Desktop nav -->
+        <div class="hidden lg:flex items-center gap-8">
+          <ul class="flex items-center gap-7 text-[13px] uppercase tracking-wider text-steel-200">
+            <li><a class="relative py-2 hover:text-steel-50 transition-colors after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full" href="#home">Home</a></li>
+            <li><a class="relative py-2 hover:text-steel-50 transition-colors after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full" href="#about">About</a></li>
+            <li><a class="relative py-2 hover:text-steel-50 transition-colors after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full" href="#services">Services</a></li>
+            <li><a class="relative py-2 hover:text-steel-50 transition-colors after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full" href="#contact">Contact</a></li>
+          </ul>
+          <a href="tel:5206681600" class="text-[13px] uppercase tracking-wider text-steel-200 hover:text-steel-50 transition-colors">520-668-1600</a>
+          <a href="#quote" class="btn-ember group relative inline-flex items-center gap-2 bg-ember text-white font-display font-700 uppercase tracking-wider text-sm px-5 py-2.5 hover:bg-ember-soft">
+            Request a Quote
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <!-- Mobile toggle -->
+        <button id="menuBtn" class="lg:hidden grid place-items-center w-11 h-11 hairline bg-graphite-800 text-steel-100" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+          <svg id="iconOpen" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <svg id="iconClose" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="lg:hidden hidden hairline-t bg-graphite-850">
+      <ul class="px-5 py-4 flex flex-col divide-y divide-graphite-600/60 text-sm uppercase tracking-wider">
+        <li><a class="block py-3 text-steel-200 hover:text-ember" href="#home">Home</a></li>
+        <li><a class="block py-3 text-steel-200 hover:text-ember" href="#about">About</a></li>
+        <li><a class="block py-3 text-steel-200 hover:text-ember" href="#services">Services</a></li>
+        <li><a class="block py-3 text-steel-200 hover:text-ember" href="#contact">Contact</a></li>
+      </ul>
+      <div class="px-5 pb-5 flex flex-col gap-3">
+        <a href="tel:5206681600" class="text-center hairline py-3 text-steel-100 uppercase tracking-wider text-sm hover:border-steel-300">Call 520-668-1600</a>
+        <a href="#quote" class="btn-ember text-center bg-ember text-white font-display font-700 uppercase tracking-wider py-3 hover:bg-ember-soft">Request a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================================
+         HERO — spec-sheet / HUD treatment
+         ============================================================ -->
+    <section id="home" class="relative overflow-hidden grain">
+      <!-- atmospheric layers -->
+      <div class="absolute inset-0 bg-crosshatch opacity-60" aria-hidden="true"></div>
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background:radial-gradient(900px 540px at 78% 18%, rgba(214,40,40,0.10), transparent 60%), radial-gradient(700px 700px at 8% 90%, rgba(124,130,141,0.10), transparent 65%);"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pt-14 pb-20 lg:pt-20 lg:pb-28">
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+
+          <!-- Left: copy -->
+          <div class="lg:col-span-7">
+            <!-- coordinate-style eyebrow -->
+            <div class="reveal-load d1 inline-flex items-center gap-3 text-[11px] uppercase tracking-wider2 text-steel-300 mb-7">
+              <span class="inline-block w-8 h-px bg-ember"></span>
+              <span>Tucson, AZ&nbsp;&nbsp;/&nbsp;&nbsp;Lat 32.1°N&nbsp;&nbsp;Lon 110.9°W</span>
+            </div>
+
+            <h1 class="reveal-load d2 font-display font-900 uppercase leading-[0.9] text-steel-50 text-[3.1rem] sm:text-7xl lg:text-[5.4rem] tracking-[-0.02em]">
+              Precision parts,<br/>
+              <span class="text-ember">machined</span> to spec.
+            </h1>
+
+            <p class="reveal-load d3 mt-7 max-w-xl text-steel-200 text-[15px] leading-relaxed">
+              Titantech CNC is a Tucson precision machining job shop running modern
+              <span class="text-steel-50">Haas VF-2SS</span> mills and CNC lathes. We deliver tight-tolerance
+              automotive and general parts — fast quotes, fast lead times, no compromise on quality.
+            </p>
+
+            <!-- inline spec callouts -->
+            <dl class="reveal-load d4 mt-9 flex flex-wrap gap-x-8 gap-y-5 text-sm">
+              <div>
+                <dt class="text-[10px] uppercase tracking-wider2 text-steel-300 mb-1">Tolerance</dt>
+                <dd class="font-display font-800 text-2xl text-steel-50 tabular">±0.0005<span class="text-ember">"</span></dd>
+              </div>
+              <div class="pl-8 border-l border-graphite-500">
+                <dt class="text-[10px] uppercase tracking-wider2 text-steel-300 mb-1">Lead time</dt>
+                <dd class="font-display font-800 text-2xl text-steel-50">Quick-turn</dd>
+              </div>
+              <div class="pl-8 border-l border-graphite-500">
+                <dt class="text-[10px] uppercase tracking-wider2 text-steel-300 mb-1">Axis</dt>
+                <dd class="font-display font-800 text-2xl text-steel-50 tabular">3 · 4 · 5</dd>
+              </div>
+            </dl>
+
+            <div class="reveal-load d5 mt-10 flex flex-col sm:flex-row gap-3">
+              <a href="#quote" class="btn-ember group inline-flex items-center justify-center gap-2 bg-ember text-white font-display font-700 uppercase tracking-wider px-7 py-4 hover:bg-ember-soft">
+                Request a Quote
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a href="tel:5206681600" class="btn-ghost inline-flex items-center justify-center gap-2 hairline bg-graphite-800/60 text-steel-100 uppercase tracking-wider px-7 py-4 hover:border-steel-300 hover:text-steel-50">
+                <svg class="w-4 h-4 text-ember" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+                Call 520-668-1600
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: plain image placeholder (drop a real shop photo in here later) -->
+          <div class="reveal-load d4 lg:col-span-5">
+            <div class="relative aspect-[4/5] hairline bg-graphite-850 grid place-items-center text-center">
+              <div class="flex flex-col items-center gap-3 px-6">
+                <svg class="w-8 h-8 text-steel-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <circle cx="9" cy="10" r="2"/>
+                  <path d="m4 18 5-4 4 3 3-2 4 3"/>
+                </svg>
+                <span class="text-[11px] uppercase tracking-wider2 text-steel-300">Image placeholder</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SERVICES GRID
+         ============================================================ -->
+    <section id="services" class="relative py-20 lg:py-28">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8">
+
+        <!-- section header -->
+        <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider2 text-ember mb-4 flex items-center gap-3"><span class="w-8 h-px bg-ember"></span>Capabilities</p>
+            <h2 class="font-display font-800 uppercase text-steel-50 text-4xl sm:text-5xl leading-[0.95] tracking-[-0.015em]">What we machine</h2>
+          </div>
+          <p class="max-w-md text-steel-300 text-sm leading-relaxed">
+            One shop, full coverage — from one-off prototypes to repeatable production runs.
+            Every job is programmed, cut, and inspected in-house.
+          </p>
+        </div>
+
+        <!-- grid -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-graphite-500/30 hairline">
+
+          <!-- card template: hairline cells over graphite, ember on hover -->
+          <!-- 1. 3-Axis Milling -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4h16v5H4zM10 9v7M14 9v7M8 16h8l-1 4H9z"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">01</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">3-Axis Milling</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">Workhorse milling on our Haas VF-2SS for brackets, plates, housings and fixtures — accurate, repeatable, fast.</p>
+          </article>
+
+          <!-- 2. 4th & 5th Axis -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="2.5"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">02</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">4th &amp; 5th Axis Machining</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">Complex, multi-sided geometry in fewer setups — tighter tolerances and cleaner features on intricate parts.</p>
+          </article>
+
+          <!-- 3. CNC Turning -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 9h18v6H3z"/><path d="M7 9V6M11 9V6M15 9V6M19 9V6"/><circle cx="12" cy="12" r="1.5"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">03</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">CNC Turning</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">Precision lathe work for shafts, bushings, spacers and round stock — concentric, on-spec, production-ready.</p>
+          </article>
+
+          <!-- 4. Laser Engraving -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2v9"/><path d="M9 11h6l-1.5 4h-3z"/><path d="M10.5 15l1.5 7 1.5-7"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">04</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">Laser Engraving</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">Permanent marking, part numbers, logos and serialization — crisp, durable engraving on metal and plastics.</p>
+          </article>
+
+          <!-- 5. Custom Parts -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">05</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">Custom Parts Manufacturing</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">From a napkin sketch or a CAD file to finished parts — prototypes and short runs built to your print.</p>
+          </article>
+
+          <!-- 6. Repair & Rework -->
+          <article class="reveal group relative bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="absolute top-0 left-0 h-0.5 w-0 bg-ember group-hover:w-full transition-all duration-500" aria-hidden="true"></span>
+            <div class="flex items-start justify-between">
+              <span class="grid place-items-center w-12 h-12 hairline bg-graphite-900 text-ember group-hover:ember-glow transition-all duration-300 group-hover:-translate-y-0.5">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2z"/></svg>
+              </span>
+              <span class="font-mono text-[11px] text-steel-300">06</span>
+            </div>
+            <h3 class="mt-6 font-display font-700 uppercase text-xl text-steel-50 tracking-wide">Repair &amp; Rework Services</h3>
+            <p class="mt-2 text-sm text-steel-300 leading-relaxed">Salvage damaged components, re-machine worn features and modify existing parts — back in service, not in the scrap bin.</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ABOUT / CAPABILITIES — WHY US (3 value props)
+         ============================================================ -->
+    <section id="about" class="relative py-20 lg:py-28 hairline-t bg-graphite-850/60 grain overflow-hidden">
+      <div class="absolute inset-0 bg-machined opacity-50" aria-hidden="true"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+          <!-- left: heading + placeholder shop-floor block -->
+          <div class="lg:col-span-5">
+            <p class="reveal text-[11px] uppercase tracking-wider2 text-ember mb-3 flex items-center gap-3"><span class="w-8 h-px bg-ember"></span>Why Titantech</p>
+            <h2 class="reveal font-display font-800 uppercase text-steel-50 text-4xl sm:text-5xl leading-[0.95] tracking-tight">A small shop with<br/>serious capability.</h2>
+            <p class="reveal mt-6 text-steel-300 text-sm leading-relaxed max-w-md">
+              We're a family-run machine shop in Tucson with 20+ years of combined experience behind the spindle.
+              Big enough to hold real tolerances on automotive and general parts — small enough to actually pick up the phone.
+            </p>
+
+            <!-- plain image placeholder (drop a real shop-floor photo in here later) -->
+            <div class="reveal mt-8 relative aspect-[4/3] hairline bg-graphite-800 grid place-items-center text-center">
+              <div class="flex flex-col items-center gap-3 px-6">
+                <svg class="w-8 h-8 text-steel-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <circle cx="9" cy="10" r="2"/>
+                  <path d="m4 18 5-4 4 3 3-2 4 3"/>
+                </svg>
+                <span class="text-[11px] uppercase tracking-wider2 text-steel-300">Image placeholder</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- right: 3 value props as spec rows -->
+          <div class="lg:col-span-7 lg:pt-2">
+            <ul class="flex flex-col">
+
+              <li class="reveal group hairline-t py-7 flex gap-6 hover:bg-graphite-800/40 transition-colors px-1">
+                <span class="font-display font-800 text-ember text-4xl leading-none w-16 shrink-0">A1</span>
+                <div>
+                  <h3 class="font-display font-700 uppercase text-2xl text-steel-50 tracking-wide">Available &amp; fast to respond</h3>
+                  <p class="mt-2 text-sm text-steel-300 leading-relaxed max-w-xl">When you need parts, you need them now. We answer quotes quickly, keep you updated through the job, and hit the lead times we promise — no chasing, no silence.</p>
+                </div>
+              </li>
+
+              <li class="reveal group hairline-t py-7 flex gap-6 hover:bg-graphite-800/40 transition-colors px-1">
+                <span class="font-display font-800 text-ember text-4xl leading-none w-16 shrink-0">A2</span>
+                <div>
+                  <h3 class="font-display font-700 uppercase text-2xl text-steel-50 tracking-wide">Competitive without cutting corners</h3>
+                  <p class="mt-2 text-sm text-steel-300 leading-relaxed max-w-xl">Fair, transparent pricing that respects your budget — and quality that never gets value-engineered away. You get top-tier precision at a number that makes sense.</p>
+                </div>
+              </li>
+
+              <li class="reveal group hairline-t hairline-b py-7 flex gap-6 hover:bg-graphite-800/40 transition-colors px-1">
+                <span class="font-display font-800 text-ember text-4xl leading-none w-16 shrink-0">A3</span>
+                <div>
+                  <h3 class="font-display font-700 uppercase text-2xl text-steel-50 tracking-wide">Experienced hands on every part</h3>
+                  <p class="mt-2 text-sm text-steel-300 leading-relaxed max-w-xl">Seasoned machinists program, run, and inspect every job in-house. Two decades of combined experience means we catch problems on the screen — long before they hit the metal.</p>
+                </div>
+              </li>
+
+            </ul>
+
+            <!-- engineered stat blocks -->
+            <dl class="grid grid-cols-2 sm:grid-cols-4 gap-px mt-8 bg-graphite-500/30 hairline">
+              <div class="reveal bg-graphite-850 p-5 text-center">
+                <dt class="text-[10px] uppercase tracking-wider text-steel-300">Tolerance</dt>
+                <dd class="font-display font-800 text-3xl text-steel-50 mt-1 tabular">±.0005<span class="text-ember">"</span></dd>
+              </div>
+              <div class="reveal bg-graphite-850 p-5 text-center">
+                <dt class="text-[10px] uppercase tracking-wider text-steel-300">Experience</dt>
+                <dd class="font-display font-800 text-3xl text-steel-50 mt-1 tabular">20<span class="text-ember">+</span></dd>
+              </div>
+              <div class="reveal bg-graphite-850 p-5 text-center">
+                <dt class="text-[10px] uppercase tracking-wider text-steel-300">Axes</dt>
+                <dd class="font-display font-800 text-3xl text-steel-50 mt-1 tabular">5</dd>
+              </div>
+              <div class="reveal bg-graphite-850 p-5 text-center">
+                <dt class="text-[10px] uppercase tracking-wider text-steel-300">Materials</dt>
+                <dd class="font-display font-800 text-3xl text-steel-50 mt-1 tabular">6<span class="text-ember">+</span></dd>
+              </div>
+            </dl>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         QUOTE / CTA BAND
+         ============================================================ -->
+    <section id="quote" class="relative py-20 lg:py-24 overflow-hidden hairline-t">
+      <div class="absolute inset-0 steel-sheen" aria-hidden="true"></div>
+      <div class="absolute inset-0 bg-crosshatch opacity-40" aria-hidden="true"></div>
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background:radial-gradient(800px 400px at 85% 50%, rgba(214,40,40,0.16), transparent 60%);"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+          <div class="reveal lg:col-span-8">
+            <p class="text-[11px] uppercase tracking-wider2 text-ember mb-4 flex items-center gap-3"><span class="w-8 h-px bg-ember"></span>Ready when you are</p>
+            <h2 class="font-display font-900 uppercase text-steel-50 text-4xl sm:text-6xl leading-[0.92] tracking-tight">
+              Send us a print.<br/>Get a quote back fast.
+            </h2>
+            <p class="mt-5 text-steel-200 text-sm sm:text-base max-w-xl leading-relaxed">
+              Email your drawing, STEP file, or even a photo and a few dimensions.
+              We'll review feasibility, recommend materials, and turn around pricing and lead time.
+            </p>
+          </div>
+          <div class="reveal lg:col-span-4 flex flex-col gap-3 lg:items-end">
+            <a href="mailto:titantechcnc@gmail.com?subject=Quote%20Request%20-%20Titantech%20CNC" class="group w-full lg:w-auto inline-flex items-center justify-center gap-2 bg-ember text-white font-display font-700 uppercase tracking-wider px-8 py-4 hover:bg-ember-soft transition-colors">
+              Request a Quote
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="tel:5206681600" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 hairline bg-graphite-900/40 text-steel-100 uppercase tracking-wider px-8 py-4 hover:border-steel-300 hover:text-steel-50 transition-colors">
+              Call 520-668-1600
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONTACT — NAP + HOURS
+         ============================================================ -->
+    <section id="contact" class="relative py-20 lg:py-28 hairline-t bg-graphite-900">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8">
+
+        <div class="reveal mb-12">
+          <p class="text-[11px] uppercase tracking-wider2 text-ember mb-3 flex items-center gap-3"><span class="w-8 h-px bg-ember"></span>Contact</p>
+          <h2 class="font-display font-800 uppercase text-steel-50 text-4xl sm:text-5xl leading-none tracking-tight">Get in touch</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-graphite-500/30 hairline">
+
+          <!-- Phone -->
+          <div class="reveal bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="grid place-items-center w-11 h-11 hairline bg-graphite-900 text-ember mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+            </span>
+            <p class="text-[10px] uppercase tracking-wider2 text-steel-300">Phone</p>
+            <a href="tel:5206681600" class="block mt-1 font-display font-700 text-xl text-steel-50 hover:text-ember transition-colors">520-668-1600</a>
+          </div>
+
+          <!-- Email -->
+          <div class="reveal bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="grid place-items-center w-11 h-11 hairline bg-graphite-900 text-ember mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            </span>
+            <p class="text-[10px] uppercase tracking-wider2 text-steel-300">Email</p>
+            <a href="mailto:titantechcnc@gmail.com" class="block mt-1 font-display font-700 text-lg text-steel-50 hover:text-ember transition-colors break-all">titantechcnc@gmail.com</a>
+          </div>
+
+          <!-- Hours -->
+          <div class="reveal bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="grid place-items-center w-11 h-11 hairline bg-graphite-900 text-ember mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            </span>
+            <p class="text-[10px] uppercase tracking-wider2 text-steel-300">Hours</p>
+            <p class="mt-1 font-display font-700 text-xl text-steel-50">Mon–Fri</p>
+            <p class="text-sm text-steel-300 mt-0.5">7:00am – 5:00pm</p>
+          </div>
+
+          <!-- Location -->
+          <div class="reveal bg-graphite-850 p-7 hover:bg-graphite-800 transition-colors">
+            <span class="grid place-items-center w-11 h-11 hairline bg-graphite-900 text-ember mb-5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 22s8-5.5 8-12a8 8 0 1 0-16 0c0 6.5 8 12 8 12Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            </span>
+            <p class="text-[10px] uppercase tracking-wider2 text-steel-300">Location</p>
+            <address class="not-italic mt-1 text-sm text-steel-100 leading-relaxed">
+              227 E Valencia Rd, Ste 230<br/>Tucson, AZ 85706
+            </address>
+          </div>
+
+        </div>
+
+        <!-- plain map placeholder (embed a real map here later) -->
+        <div class="reveal relative mt-px h-44 sm:h-56 hairline bg-graphite-850 grid place-items-center text-center">
+          <div class="flex flex-col items-center gap-3 px-6">
+            <svg class="w-8 h-8 text-steel-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 22s8-5.5 8-12a8 8 0 1 0-16 0c0 6.5 8 12 8 12Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span class="text-[11px] uppercase tracking-wider2 text-steel-300">Map placeholder</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="relative hairline-t bg-graphite-850 grain overflow-hidden">
+    <div class="absolute inset-0 bg-machined opacity-40" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+
+        <!-- brand + address -->
+        <div class="md:col-span-5">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="grid place-items-center w-10 h-10 shrink-0 text-ember">
+              <svg viewBox="0 0 100 100" class="w-full h-full" aria-hidden="true">
+                <g fill="currentColor">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="7"/>
+                  <g>
+                    <rect x="46" y="2" width="8" height="12" rx="1"/>
+                    <rect x="46" y="86" width="8" height="12" rx="1"/>
+                    <rect x="2" y="46" width="12" height="8" rx="1"/>
+                    <rect x="86" y="46" width="12" height="8" rx="1"/>
+                    <rect x="46" y="2" width="8" height="12" rx="1" transform="rotate(45 50 50)"/>
+                    <rect x="46" y="86" width="8" height="12" rx="1" transform="rotate(45 50 50)"/>
+                    <rect x="46" y="2" width="8" height="12" rx="1" transform="rotate(-45 50 50)"/>
+                    <rect x="46" y="86" width="8" height="12" rx="1" transform="rotate(-45 50 50)"/>
+                  </g>
+                </g>
+                <g fill="currentColor">
+                  <rect x="46" y="30" width="8" height="40" rx="1"/>
+                  <rect x="34" y="40" width="8" height="30" rx="1"/>
+                  <rect x="58" y="40" width="8" height="30" rx="1"/>
+                </g>
+                <path d="M22 74 L40 56 H60 L78 74" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="leading-none">
+              <span class="block font-display font-800 text-steel-50 text-lg uppercase tracking-[0.12em]">Titantech</span>
+              <span class="block text-[10px] text-ember tracking-[0.5em] uppercase mt-0.5">C N C</span>
+            </span>
+          </div>
+          <p class="text-sm text-steel-300 max-w-xs leading-relaxed">
+            Precision machining job shop in Tucson, AZ. Tight tolerances, fast lead times, automotive and general parts.
+          </p>
+          <address class="not-italic mt-5 text-sm text-steel-200 leading-relaxed">
+            227 E Valencia Rd, Ste 230<br/>Tucson, AZ 85706
+          </address>
+        </div>
+
+        <!-- services list -->
+        <div class="md:col-span-4">
+          <p class="text-[11px] uppercase tracking-wider2 text-steel-300 mb-4">Services</p>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-6 text-sm">
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">3-Axis Milling</a></li>
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">4th &amp; 5th Axis</a></li>
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">CNC Turning</a></li>
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">Laser Engraving</a></li>
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">Custom Parts</a></li>
+            <li><a href="#services" class="text-steel-200 hover:text-ember transition-colors">Repair &amp; Rework</a></li>
+          </ul>
+        </div>
+
+        <!-- contact + social -->
+        <div class="md:col-span-3">
+          <p class="text-[11px] uppercase tracking-wider2 text-steel-300 mb-4">Connect</p>
+          <ul class="flex flex-col gap-2.5 text-sm">
+            <li><a href="tel:5206681600" class="text-steel-200 hover:text-ember transition-colors">520-668-1600</a></li>
+            <li><a href="mailto:titantechcnc@gmail.com" class="text-steel-200 hover:text-ember transition-colors break-all">titantechcnc@gmail.com</a></li>
+            <li class="text-steel-300">Mon–Fri · 7am–5pm</li>
+          </ul>
+          <a href="#" aria-label="Titantech CNC on Instagram" class="mt-5 inline-flex items-center gap-2 hairline px-3 py-2 text-sm text-steel-100 hover:border-ember hover:text-ember transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+
+      <!-- bottom bar -->
+      <div class="hairline-t mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-steel-300">
+        <p class="uppercase tracking-wider">© 2026 Titantech CNC</p>
+        <p class="uppercase tracking-wider flex items-center gap-2">
+          <span class="w-1.5 h-1.5 bg-ember inline-block"></span>
+          Precision Machining · Tucson, AZ
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JS — mobile menu toggle + scroll reveal (vanilla, no libs)
+       ============================================================ -->
+  <script>
+    (function () {
+      // ---- Mobile menu ----
+      var btn = document.getElementById('menuBtn');
+      var menu = document.getElementById('mobileMenu');
+      var iconOpen = document.getElementById('iconOpen');
+      var iconClose = document.getElementById('iconClose');
+
+      function setMenu(open) {
+        menu.classList.toggle('hidden', !open);
+        iconOpen.classList.toggle('hidden', open);
+        iconClose.classList.toggle('hidden', !open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      }
+      btn.addEventListener('click', function () {
+        setMenu(menu.classList.contains('hidden'));
+      });
+      // close on link click
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { setMenu(false); });
+      });
+      // close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setMenu(false);
+      });
+
+      // ---- Scroll reveal ----
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var items = document.querySelectorAll('.reveal');
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach(function (el) { el.classList.add('in'); });
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        items.forEach(function (el) { io.observe(el); });
+      }
+    })();
+  </script>
+</body>
+</html>

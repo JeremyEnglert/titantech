@@ -1,0 +1,10 @@
+- Use kebab-case for all file names (e.g. `user-profile.tsx`, not `UserProfile.tsx`)
+- No barrel files — import directly from source files, never re-export via `index.ts`
+- Comments explain "why", not "what" — skip comments that restate the code
+- Prefer clarity over brevity in naming — no abbreviations except: `id`, `url`, `api`, `props`, `params`, `env`
+- Always use auto-generated Payload types from `@/payload-types` — never recreate them manually
+- Block configs go in `src/blocks/{name}/config.ts`, UI components go in `src/components/{name}.tsx` — never put React components in `src/blocks/`
+- Block spacing vocabulary: every page block is either **transparent** (paints no background of its own — the page shows through) or **painted** (paints a background: band, tint, image, hero). A block with a background option is transparent in its plain variant and painted in its colored variant — one ternary in the component.
+- Transparent blocks apply the `default-block-margin` utility (globals.css) to their root. Touching margins collapse into ONE gap, so every gap on the page is the same size. Painted blocks apply no outer spacing — breathing room is interior padding inside the paint; their air comes from neighbors' margins, which is why painted blocks stack flush and heroes meet the header.
+- The render-blocks wrapper (`<section data-block="…">`) carries zero spacing; the editor's Extra Spacing renders there as a LARGER margin that outbids the standard gap via collapse (options mean "bigger total gap", not "added space"). Margin collapsing requires normal block flow: never make the blocks container flex/grid or give it gap/space-y.
+- Never use the Tailwind `container` class — use fluid wrappers (`mx-auto w-full max-w-{N} px-{N}`)
