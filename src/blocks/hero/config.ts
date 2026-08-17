@@ -71,7 +71,17 @@ export const HeroBlock: Block = {
                 {
                   type: 'row',
                   fields: [
-                    { name: 'label', type: 'text', label: 'Label', required: true },
+                    // Optional: the row doubles as a capability strip
+                    // ("5-Axis Machining | CNC Turning | …"), where the value
+                    // is the whole point and a label would just repeat it.
+                    {
+                      name: 'label',
+                      type: 'text',
+                      label: 'Label',
+                      admin: {
+                        description: 'Leave blank to show the value on its own.',
+                      },
+                    },
                     { name: 'value', type: 'text', label: 'Value', required: true },
                   ],
                 },

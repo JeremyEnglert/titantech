@@ -18,9 +18,9 @@ runSeed('Seed quote page', async () => {
     slug: 'quote',
     title: 'Request a Quote',
     meta: {
-      title: 'Request a Quote — Titantech CNC | Tucson, AZ',
+      title: 'Request a Quote — 5-Axis CNC Machining | Titantech CNC',
       description:
-        'Send a drawing, STEP file, or a photo with dimensions. We review feasibility, recommend materials, and turn around pricing and lead time.',
+        "Send your drawing, STEP file and quantity. We'll review manufacturability, material requirements, tolerances and lead time and get back to you quickly.",
     },
     content: [
       {
@@ -28,7 +28,7 @@ runSeed('Seed quote page', async () => {
         eyebrow: 'Ready when you are',
         title: 'Send us a print. Get a quote back fast.',
         intro:
-          "Email your drawing, STEP file, or even a photo and a few dimensions. We'll review feasibility, recommend materials, and turn around pricing and lead time.",
+          "Send your drawing, STEP file and quantity. We'll review manufacturability, material requirements, tolerances and lead time and get back to you quickly.",
         background: 'none',
         topDivider: false,
       },
@@ -36,13 +36,13 @@ runSeed('Seed quote page', async () => {
         blockType: 'form',
         title: 'Request a quote',
         intro: textToLexical(
-          'The more you can tell us up front, the tighter the number comes back. If you only have a photo and a rough idea, send that — we will ask for what is missing.',
+          'The more you can tell us up front, the tighter the number comes back — quantity, material, critical tolerances and the date you need it by.',
         ),
         form: formId,
         aside: {
           title: 'What happens next',
           body: textToLexical(
-            'We review the part for feasibility, flag anything on the drawing that will drive cost, and come back with pricing and a lead time. Urgent job? Call 520-668-1600 and we will pull it forward.\n\nFiles too large to attach can go straight to titantechcnc@gmail.com.',
+            'We review the component for manufacturability, flag anything on the drawing that will drive cost, and come back with pricing and a lead time. Urgent job? Call 520-668-1600 and we will pull it forward.\n\nFiles too large to attach can go straight to titantechcnc@gmail.com.',
           ),
         },
         layout: 'split',

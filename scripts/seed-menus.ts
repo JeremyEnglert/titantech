@@ -22,12 +22,12 @@ const menus: SeedMenu[] = [
     location: 'footer-services',
     name: 'Footer — Services',
     items: [
-      { label: '3-Axis Milling', url: '/services#three-axis-milling' },
-      { label: '4th & 5th Axis', url: '/services#multi-axis-machining' },
+      { label: '5-Axis Machining', url: '/services#five-axis-machining' },
+      { label: 'CNC Milling', url: '/services#cnc-milling' },
       { label: 'CNC Turning', url: '/services#cnc-turning' },
       { label: 'Laser Engraving', url: '/services#laser-engraving' },
-      { label: 'Custom Parts', url: '/services#custom-parts' },
-      { label: 'Repair & Rework', url: '/services#repair-rework' },
+      { label: 'Prototype to Production', url: '/services#prototype-to-production' },
+      { label: 'Difficult Materials', url: '/services#difficult-materials' },
     ],
   },
   {

@@ -6,6 +6,7 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../utilities/populate-published-at'
 import { generatePreviewPath } from '../../utilities/generate-preview-path'
 import { revalidateDelete, revalidatePage } from './hooks/revalidate-page'
+import { CapabilityGridBlock } from '@/blocks/capability-grid/config'
 import { ContactCardsBlock } from '@/blocks/contact-cards/config'
 import { CtaBandBlock } from '@/blocks/cta-band/config'
 import { FormBlock } from '@/blocks/form/config'
@@ -83,6 +84,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ServiceCardsBlock,
                 ValuePropsBlock,
                 StatsBlock,
+                CapabilityGridBlock,
                 MediaWithTextBlock,
                 RichTextBlock,
                 FormBlock,

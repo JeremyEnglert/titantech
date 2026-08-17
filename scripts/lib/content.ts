@@ -1,13 +1,19 @@
 import { textToLexical } from './text-to-lexical'
 
 /**
- * Copy shared between pages, so the six capabilities can never say one thing
- * on the home page and another on /services.
+ * Copy shared between pages, so a capability can never say one thing on the
+ * home page and another on /services.
  *
- * Everything here is grounded in what the source design already claims —
- * Haas VF-2SS mills and CNC lathes, ±0.0005", 3/4/5-axis, 20+ years combined,
- * family-run, Tucson, Mon–Fri 7–5. No certifications, machine models, client
- * names or capacities beyond that have been invented.
+ * Positioning: a modern precision CNC shop doing complex, tight-tolerance,
+ * multi-axis work — NOT a general machine shop. The words an engineer, buyer
+ * or sourcing lead scans for are the ones that have to be present: 5-axis,
+ * complex geometries, tight tolerances, CNC turning, advanced materials,
+ * prototype-to-production, quick-turn.
+ *
+ * Every factual claim traces to something the client supplied: the equipment
+ * list (UMC-500SS, VF-2SS, TL-1P), the material grades, the industries, and
+ * ±0.0005". Nothing beyond that is invented — no certifications, capacities,
+ * client names or years in business.
  */
 
 export type ServiceSeed = {
@@ -18,22 +24,24 @@ export type ServiceSeed = {
   long: string
 }
 
+// 5-axis leads: it is the capability the client most wants buyers to see, and
+// the one that separates them from a general shop.
 export const services: ServiceSeed[] = [
   {
-    anchor: 'three-axis-milling',
-    icon: 'mill',
-    title: '3-Axis Milling',
+    anchor: 'five-axis-machining',
+    icon: 'multiAxis',
+    title: 'Advanced 5-Axis CNC Machining',
     short:
-      'Workhorse milling on our Haas VF-2SS for brackets, plates, housings and fixtures — accurate, repeatable, fast.',
-    long: 'Most of what leaves this shop starts on the Haas VF-2SS. Brackets, plates, housings, manifolds, fixtures and adapter blocks — the everyday parts a machine, a vehicle or a line cannot run without.\n\nWe program, cut and inspect every job in-house, so what we quote is what we run. That matters most on repeat work: the second batch comes off the same program, on the same setup, to the same numbers as the first.',
+      'Complex geometries, angled features, multi-sided components and tight positional relationships machined in fewer setups.',
+    long: 'Complex geometries, angled features, multi-sided components and tight positional relationships machined in fewer setups. Our 5-axis capability allows us to tackle intricate components while improving accuracy, repeatability and surface consistency.\n\nEvery time a part comes out of the vise and goes back in, it picks up error. Machining in a single setup removes those handoffs — which is what holds true position across the whole envelope rather than only within one face, and what keeps surface finish consistent across blended faces.',
   },
   {
-    anchor: 'multi-axis-machining',
-    icon: 'multiAxis',
-    title: '4th & 5th Axis Machining',
+    anchor: 'cnc-milling',
+    icon: 'mill',
+    title: '3-Axis & 3+2 CNC Milling',
     short:
-      'Complex, multi-sided geometry in fewer setups — tighter tolerances and cleaner features on intricate parts.',
-    long: 'Every time a part comes out of the vise and goes back in, it picks up a little error. Fourth- and fifth-axis work removes those handoffs: the part is indexed under the spindle instead of re-fixtured on the bench.\n\nThe result is a tighter, cleaner part — compound angles, features on faces that a 3-axis setup cannot reach, and true position that holds across the whole envelope rather than only within one face. Fewer setups also means less labor in the part, which usually shows up in the quote.',
+      'High-speed vertical milling for brackets, plates, housings, manifolds and fixtures — accurate, repeatable, production-ready.',
+    long: 'High-speed vertical milling on our Haas VF-2SS, with 3+2 positioning for features that sit off the primary face. Brackets, plates, housings, manifolds, fixtures and adapter blocks — the precision components a machine, an assembly or a line cannot run without.\n\nWe program, cut and inspect every job in-house, so what we quote is what we run. That matters most on repeat work: the second batch comes off the same program, on the same setup, to the same numbers as the first.',
   },
   {
     anchor: 'cnc-turning',
@@ -41,31 +49,31 @@ export const services: ServiceSeed[] = [
     title: 'CNC Turning',
     short:
       'Precision lathe work for shafts, bushings, spacers and round stock — concentric, on-spec, production-ready.',
-    long: 'Shafts, bushings, spacers, pins, standoffs, threaded bodies and anything else that starts as round stock. Turned work is judged on concentricity and finish, and both are set long before the tool touches metal — in the workholding, the tooling, and the feeds we choose.\n\nWe run turning as one-off replacements and as production batches, and we are equally happy doing either.',
+    long: 'Shafts, bushings, spacers, pins, standoffs, threaded bodies and anything else that starts as round stock, turned on our Haas TL-1P. Turned work is judged on concentricity and finish, and both are set long before the tool touches metal — in the workholding, the tooling, and the feeds we choose.\n\nWe run turning as one-off prototypes and as repeat production, and we are equally set up for either.',
   },
   {
     anchor: 'laser-engraving',
     icon: 'laser',
-    title: 'Laser Engraving',
+    title: 'Laser Engraving & Part Marking',
     short:
-      'Permanent marking, part numbers, logos and serialization — crisp, durable engraving on metal and plastics.',
-    long: 'Part numbers, revision marks, serial ranges, logos, scales and instruction plates — marked permanently into metal and plastics rather than printed on and worn off.\n\nEngraving is often the last operation on a part we already machined, which keeps the marking registered to the features it refers to. We also engrave customer-supplied parts.',
+      'Permanent part numbers, serial numbers, logos, identification marks and traceability information on machined components.',
+    long: 'Permanent part numbers, serial numbers, logos, identification marks and traceability information on machined components — marked into the material rather than printed on and worn off.\n\nMarking is usually the last operation on a part we already machined, which keeps it registered to the features it refers to. We also mark customer-supplied components.',
   },
   {
-    anchor: 'custom-parts',
+    anchor: 'prototype-to-production',
     icon: 'customPart',
-    title: 'Custom Parts Manufacturing',
+    title: 'Prototype to Production',
     short:
-      'From a napkin sketch or a CAD file to finished parts — prototypes and short runs built to your print.',
-    long: 'Send a print, a STEP file, or a photo of the broken part with a few dimensions written next to it. All three are a legitimate starting point, and all three land in the same place: a part that fits.\n\nWe will tell you where a feature is going to be expensive to hold, where a material change would save you money, and where the drawing says something the part does not need. Then we make it. Prototypes, one-offs, and short production runs.',
+      'One-off prototypes through repeat production runs, from your print or STEP file to finished, inspected components.',
+    long: 'Send a drawing or a STEP file and we will tell you what it takes to make it: where a feature will drive cost, where a material change buys you margin, and where the print calls for a tolerance the part does not need.\n\nThe same programs, fixturing and inspection carry from the first article through to repeat production, so a part that qualifies as a prototype is the part you receive at quantity.',
   },
   {
-    anchor: 'repair-rework',
+    anchor: 'difficult-materials',
     icon: 'repair',
-    title: 'Repair & Rework Services',
+    title: 'Difficult Materials',
     short:
-      'Salvage damaged components, re-machine worn features and modify existing parts — back in service, not in the scrap bin.',
-    long: 'A worn bore, a galled shaft, a stripped thread or a bracket that needs one more hole is not necessarily a new part. Re-machining the damaged feature is very often faster and cheaper than replacing the whole component — especially when the original is obsolete or on a long lead time.\n\nBring us the part. We will tell you honestly whether it is worth saving.',
+      'Stainless, tool steels, titanium and engineering plastics — machined with the tooling and strategies each one demands.',
+    long: 'Hardened tool steels, work-hardening stainless, titanium and engineering plastics each fail in their own way, and each needs its own tooling, feeds and workholding to hold size and finish.\n\nWe machine across that range routinely. If you are unsure what a component should be made from, say so on the RFQ — recommending a material is part of the quote.',
   },
 ]
 
@@ -76,34 +84,80 @@ export const serviceCardRows = (variant: 'short' | 'long') =>
     body: textToLexical(variant === 'short' ? service.short : service.long),
   }))
 
-/** The three "why us" props, verbatim from the design. */
+/** Material grades, exactly as the client supplied them. */
+export const materialGroups = [
+  { title: 'Stainless Steel', detail: '303, 304, 316, 17-4 PH, 420' },
+  { title: 'Aluminum', detail: '6061, 7050 and other grades' },
+  { title: 'Alloy & Tool Steel', detail: '4140, A2, DC53, 1018' },
+  { title: 'Copper & Brass', detail: 'Free-machining and high-conductivity grades' },
+  { title: 'Engineering Plastics', detail: 'PEEK, Ultem, Delrin, Nylon' },
+  { title: 'Advanced Materials', detail: 'Titanium and other demanding alloys' },
+]
+
+export const industries = [
+  'Aerospace',
+  'Defense',
+  'Semiconductor',
+  'Robotics & Automation',
+  'Energy',
+  'R&D / Prototyping',
+  'Advanced Manufacturing',
+].map((title) => ({ title }))
+
+/** The three machines on the floor, and what each one is for. */
+export const equipment = [
+  {
+    stem: 'haas-umc-500ss',
+    title: 'Haas UMC-500SS',
+    detail:
+      '5-axis CNC machining. Complex, multi-sided geometry in a single setup — the machine behind our tightest positional work.',
+  },
+  {
+    stem: 'haas-vf-2ss-mill',
+    title: 'Haas VF-2SS',
+    detail:
+      'High-speed vertical CNC milling. Fast, repeatable 3-axis and 3+2 work across prototypes and production runs.',
+  },
+  {
+    stem: 'haas-tl-1p-lathe',
+    title: 'Haas TL-1P',
+    detail: 'Precision CNC turning. Concentric shafts, bushings, spacers and threaded bodies.',
+  },
+]
+
+/** "Built for complex work" — capability, not price. */
 export const valuePropItems = [
   {
     marker: 'A1',
-    title: 'Available & fast to respond',
-    body: 'When you need parts, you need them now. We answer quotes quickly, keep you updated through the job, and hit the lead times we promise — no chasing, no silence.',
+    title: 'Multi-axis capability',
+    body: 'Haas 5-axis and high-speed vertical machining under one roof, so intricate components are cut in fewer setups — better accuracy, better repeatability, better surface consistency.',
   },
   {
     marker: 'A2',
-    title: 'Competitive without cutting corners',
-    body: 'Fair, transparent pricing that respects your budget — and quality that never gets value-engineered away. You get top-tier precision at a number that makes sense.',
+    title: 'Advanced CAM programming',
+    body: 'Demanding geometries are programmed and verified before a tool ever moves. Problems get caught on the screen, where fixing them costs time instead of material.',
   },
   {
     marker: 'A3',
     title: 'Experienced hands on every part',
-    body: 'Seasoned machinists program, run, and inspect every job in-house. Two decades of combined experience means we catch problems on the screen — long before they hit the metal.',
+    body: 'Seasoned machinists program, run, and inspect every job in-house. Two decades of combined experience means the part that ships is the part on the print.',
   },
 ].map((item) => ({ ...item, body: textToLexical(item.body) }))
 
 export const statItems = [
   { label: 'Tolerance', value: '±.0005', accentSuffix: '"' },
-  { label: 'Experience', value: '20', accentSuffix: '+' },
   { label: 'Axes', value: '5', accentSuffix: '' },
-  { label: 'Materials', value: '6', accentSuffix: '+' },
+  { label: 'Experience', value: '20', accentSuffix: '+' },
+  { label: 'Materials', value: '15', accentSuffix: '+' },
 ]
 
 export const contactCardRows = [
-  { icon: 'phone', label: 'Phone', value: '520-668-1600', link: { linkType: 'custom' as const, url: 'tel:5206681600' } },
+  {
+    icon: 'phone',
+    label: 'Phone',
+    value: '520-668-1600',
+    link: { linkType: 'custom' as const, url: 'tel:5206681600' },
+  },
   {
     icon: 'mail',
     label: 'Email',
@@ -114,13 +168,13 @@ export const contactCardRows = [
   { icon: 'pin', label: 'Location', value: '227 E Valencia Rd, Ste 230\nTucson, AZ 85706' },
 ]
 
-/** The closing call-to-action band, verbatim from the design. */
+/** The closing call to action. */
 export const quoteCtaBand = {
   blockType: 'ctaBand' as const,
   eyebrow: 'Ready when you are',
   title: 'Send us a print.\nGet a quote back fast.',
   body: textToLexical(
-    "Email your drawing, STEP file, or even a photo and a few dimensions. We'll review feasibility, recommend materials, and turn around pricing and lead time.",
+    "Send your drawing, STEP file and quantity. We'll review manufacturability, material requirements, tolerances and lead time and get back to you quickly.",
   ),
   buttons: [
     {

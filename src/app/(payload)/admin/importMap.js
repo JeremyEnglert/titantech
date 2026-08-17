@@ -13,6 +13,7 @@ import { default as default_55c3d23cd161ba5664445215d7d973d6 } from '@/component
 import { default as default_55486cfec058a603e6b6579aa199cff6 } from '@/components/admin/service-cards-row-label'
 import { default as default_50a9bf43ec813a50c741c588f57d2437 } from '@/components/admin/value-props-row-label'
 import { default as default_41f3de2bd87a47fb9660c6adbbe53767 } from '@/components/admin/stats-row-label'
+import { default as default_22517799b1736c0a9215c80cae11fb5f } from '@/components/admin/capability-grid-row-label'
 import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
@@ -50,6 +51,7 @@ export const importMap = {
   "@/components/admin/service-cards-row-label#default": default_55486cfec058a603e6b6579aa199cff6,
   "@/components/admin/value-props-row-label#default": default_50a9bf43ec813a50c741c588f57d2437,
   "@/components/admin/stats-row-label#default": default_41f3de2bd87a47fb9660c6adbbe53767,
+  "@/components/admin/capability-grid-row-label#default": default_22517799b1736c0a9215c80cae11fb5f,
   "@payloadcms/richtext-lexical/client#UploadFeatureClient": UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlockquoteFeatureClient": BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,

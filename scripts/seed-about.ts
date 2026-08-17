@@ -1,4 +1,4 @@
-import { quoteCtaBand, statItems, valuePropItems } from './lib/content'
+import { equipment, industries, quoteCtaBand, statItems, valuePropItems } from './lib/content'
 import { findMediaId, photoStems } from './lib/find-media'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
@@ -10,21 +10,30 @@ runSeed('Seed about page', async () => {
   const mill = await findMediaId(payload, photoStems.mill)
   const lathe = await findMediaId(payload, photoStems.lathe)
 
+  const equipmentItems = []
+  for (const machine of equipment) {
+    equipmentItems.push({
+      title: machine.title,
+      detail: machine.detail,
+      image: await findMediaId(payload, machine.stem),
+    })
+  }
+
   await upsertPage(payload, {
     slug: 'about',
     title: 'About',
     meta: {
-      title: 'About Titantech CNC — Family-Run Machine Shop in Tucson',
+      title: 'About Titantech CNC — Precision CNC Machine Shop in Tucson, AZ',
       description:
-        'A family-run precision machining shop in Tucson, AZ with 20+ years of combined experience. Programming, cutting and inspection all happen in-house.',
+        'A precision CNC machine shop in Tucson built for complex, tight-tolerance work. Multi-axis Haas equipment, advanced CAM programming, and inspection in-house.',
     },
     content: [
       {
         blockType: 'pageBanner',
         eyebrow: 'Why Titantech',
-        title: 'A small shop with serious capability.',
+        title: 'Built for complex work.',
         intro:
-          "We're a family-run machine shop in Tucson with 20+ years of combined experience behind the spindle. Big enough to hold real tolerances on automotive and general parts — small enough to actually pick up the phone.",
+          'Modern CNC equipment, advanced CAM programming and multi-axis capability allow us to take on demanding components that require more than basic machining.',
         background: 'none',
         topDivider: false,
       },
@@ -33,9 +42,9 @@ runSeed('Seed about page', async () => {
         image: mill,
         imagePosition: 'left',
         eyebrow: 'The shop',
-        title: 'Everything happens under one roof.',
+        title: 'Programming, machining and inspection under one roof.',
         body: textToLexical(
-          'Programming, cutting, and inspection all happen here. Nothing gets farmed out to a shop we cannot walk into, which is why we can tell you on the phone what a part is going to take instead of calling you back tomorrow.\n\nThat also means the person who quoted your job is the person who runs it. When something on the print is ambiguous, it gets caught at the screen — not after the first article is already scrap.',
+          'Nothing gets farmed out to a shop we cannot walk into. The person who quotes your component is the person who programs and runs it, which is why we can tell you on the phone what a part will take instead of calling you back tomorrow.\n\nIt also means an ambiguity on the print gets caught at the screen — during CAM, while the fix still costs time rather than material and a scrapped first article.',
         ),
         background: 'none',
         topDivider: false,
@@ -43,9 +52,9 @@ runSeed('Seed about page', async () => {
       {
         blockType: 'valueProps',
         eyebrow: 'How we work',
-        title: 'Three things we do not compromise on.',
+        title: 'What lets us take the hard jobs.',
         body: textToLexical(
-          'A job shop lives or dies on whether it does what it said it would. These are the commitments we hold ourselves to on every part that goes out the door.',
+          'Complex components fail on the details — a positional relationship across three faces, a finish requirement on a blended surface, a material that work-hardens the moment the strategy is wrong. Those are what we build around.',
         ),
         image: lathe,
         items: valuePropItems,
@@ -60,10 +69,29 @@ runSeed('Seed about page', async () => {
         joinPrevious: true,
       },
       {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Equipment',
+        title: 'The machines behind the work',
+        items: equipmentItems,
+        columns: '3',
+        background: 'none',
+        topDivider: true,
+        blockSettings: { anchorId: 'equipment' },
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Industries',
+        title: 'Who we machine for',
+        items: industries,
+        columns: 'auto',
+        background: 'tint',
+        topDivider: true,
+      },
+      {
         blockType: 'richText',
         width: 'narrow',
         content: textToLexical(
-          'Who we work with\n\nMost of what we run is automotive and general machining — shops, fabricators, restorers, equipment owners and manufacturers who need a part that is no longer available, or a run of parts that has to match every time.\n\nWe are equally comfortable with a single replacement bushing and a repeating production order. Small jobs are not a favor we do between the real work; they are the real work.\n\nWhat we need from you\n\nA drawing, a STEP file, or a photo with a few dimensions is enough to start. If you have a tolerance that actually matters, call it out — knowing which feature is critical lets us put the time where it counts and keep it off the ones that do not.\n\nIf you are not sure what material you need, say so. Recommending one is part of the quote.',
+          'Who we work with\n\nEngineers, buyers and sourcing teams who need a component that has to be right — aerospace and defense hardware, semiconductor and robotics parts, energy components, and the R&D work that turns into production once it proves out.\n\nWe are equally set up for a single qualifying prototype and for a repeat production order. The programs, fixturing and inspection carry across, so the part you approve is the part you keep receiving.\n\nWhat we need from you\n\nA drawing or a STEP file and a quantity. If a tolerance genuinely matters, call it out — knowing which features are critical lets us put the time where it counts and keep it off the ones that do not.\n\nIf you have not settled on a material, say so. Recommending one is part of the quote.',
         ),
         background: 'none',
         topDivider: true,

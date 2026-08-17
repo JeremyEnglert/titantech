@@ -20,9 +20,9 @@ const photos = [
     caption: 'Haas TL-1P — CNC turning',
   },
   {
-    file: 'haas-vf-6ss-mill.png',
-    alt: 'Haas VF-6SS vertical machining centre with vises fixtured on the table for a milling run',
-    caption: 'Haas VF-6SS — vertical milling',
+    file: 'haas-vf-2ss-mill.png',
+    alt: 'Haas VF-2SS vertical machining centre with vises fixtured on the table for a milling run',
+    caption: 'Haas VF-2SS — vertical milling',
   },
 ]
 

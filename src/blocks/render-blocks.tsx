@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 
 import type { Page } from '@/payload-types'
+import { CapabilityGrid } from '@/components/capability-grid'
 import { ContactCards } from '@/components/contact-cards'
 import { CtaBand } from '@/components/cta-band'
 import { FormBlock } from '@/components/form-block'
@@ -25,6 +26,7 @@ const blockComponents: Partial<Record<PageBlock['blockType'], React.ComponentTyp
   stats: Stats,
   ctaBand: CtaBand,
   contactCards: ContactCards,
+  capabilityGrid: CapabilityGrid,
   mediaWithText: MediaWithText,
   richText: RichTextBlock,
   form: FormBlock,

@@ -1,5 +1,8 @@
 import {
   contactCardRows,
+  equipment,
+  industries,
+  materialGroups,
   quoteCtaBand,
   serviceCardRows,
   statItems,
@@ -13,32 +16,44 @@ import { upsertPage } from './lib/upsert-page'
 runSeed('Seed home page', async () => {
   const payload = await getSeedPayload()
 
-  // The five-axis is the flagship machine, so it carries the hero.
+  // Five-axis is the capability the page leads on, so it carries the hero.
   const fiveAxis = await findMediaId(payload, photoStems.fiveAxis)
   const mill = await findMediaId(payload, photoStems.mill)
+
+  const equipmentItems = []
+  for (const machine of equipment) {
+    equipmentItems.push({
+      title: machine.title,
+      detail: machine.detail,
+      image: await findMediaId(payload, machine.stem),
+    })
+  }
 
   await upsertPage(payload, {
     slug: 'home',
     title: 'Home',
     meta: {
-      title: 'Titantech CNC — Precision Machining | Tucson, AZ',
+      title: 'Titantech CNC — 5-Axis Precision CNC Machining | Tucson, AZ',
       description:
-        'Precision machining job shop in Tucson, AZ. 3-axis milling, 4th & 5th axis machining, CNC turning, laser engraving and custom parts to ±0.0005". Request a quote.',
+        'Precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components to ±0.0005". Prototype to production in stainless, aluminum, tool steels, titanium and engineering plastics.',
     },
     content: [
       {
         blockType: 'hero',
-        eyebrow: 'Tucson, AZ  /  Lat 32.1°N  Lon 110.9°W',
-        title: 'Precision parts,',
-        titleAccent: 'machined',
-        titleAfter: 'to spec.',
+        eyebrow: 'Tucson, AZ  /  Precision CNC Machining',
+        title: 'Complex parts.',
+        titleAccent: 'Precision',
+        titleAfter: 'machined.',
         body: textToLexical(
-          'Titantech CNC is a Tucson precision machining job shop running modern Haas VF-2SS mills and CNC lathes. We deliver tight-tolerance automotive and general parts — fast quotes, fast lead times, no compromise on quality.',
+          'TitanTech CNC provides precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components. From one-off prototypes to repeat production, we machine demanding geometries across stainless steels, aluminum, tool steels, engineering plastics and other advanced materials.',
         ),
+        // The capability strip the client specified. These read as a scannable
+        // row rather than labelled stats, so most carry no label.
         specs: [
-          { label: 'Tolerance', value: '±0.0005', accentSuffix: '"' },
-          { label: 'Lead time', value: 'Quick-turn' },
-          { label: 'Axis', value: '3 · 4 · 5' },
+          { value: '5-Axis Machining' },
+          { value: 'CNC Turning' },
+          { label: 'Tolerances', value: '±.0005', accentSuffix: '"' },
+          { value: 'Quick-Turn' },
         ],
         buttons: [
           { label: 'Request a Quote', linkType: 'custom', url: '/quote', variant: 'default' },
@@ -58,7 +73,7 @@ runSeed('Seed home page', async () => {
         eyebrow: 'Capabilities',
         title: 'What we machine',
         intro:
-          'One shop, full coverage — from one-off prototypes to repeatable production runs. Every job is programmed, cut, and inspected in-house.',
+          'Multi-axis milling, turning, marking and material expertise under one roof — from a single prototype through repeat production. Every job is programmed, cut, and inspected in-house.',
         cards: serviceCardRows('short').map((card) => ({
           ...card,
           link: { linkType: 'custom', url: '/services' },
@@ -66,14 +81,38 @@ runSeed('Seed home page', async () => {
         columns: 'auto',
         background: 'none',
         topDivider: false,
-        blockSettings: { anchorId: 'services' },
+        blockSettings: { anchorId: 'capabilities' },
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Equipment',
+        title: 'The machines behind the work',
+        intro:
+          'Modern Haas CNC equipment, programmed and maintained in-house. What each machine is for, and what it lets us take on.',
+        items: equipmentItems,
+        columns: '3',
+        background: 'tint',
+        topDivider: true,
+        blockSettings: { anchorId: 'equipment' },
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Materials',
+        title: 'Materials we machine',
+        intro:
+          'Common production grades through demanding alloys and engineering plastics. If what you need is not listed, ask — the answer is usually yes.',
+        items: materialGroups,
+        columns: '3',
+        background: 'none',
+        topDivider: true,
+        blockSettings: { anchorId: 'materials' },
       },
       {
         blockType: 'valueProps',
         eyebrow: 'Why Titantech',
-        title: 'A small shop with serious capability.',
+        title: 'Built for complex work.',
         body: textToLexical(
-          "We're a family-run machine shop in Tucson with 20+ years of combined experience behind the spindle. Big enough to hold real tolerances on automotive and general parts — small enough to actually pick up the phone.",
+          'Modern CNC equipment, advanced CAM programming and multi-axis capability allow us to take on demanding components that require more than basic machining.',
         ),
         image: mill,
         items: valuePropItems,
@@ -87,6 +126,16 @@ runSeed('Seed home page', async () => {
         background: 'tint',
         topDivider: false,
         joinPrevious: true,
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Industries',
+        title: 'Who we machine for',
+        items: industries,
+        columns: 'auto',
+        background: 'none',
+        topDivider: true,
+        blockSettings: { anchorId: 'industries' },
       },
       quoteCtaBand,
       {

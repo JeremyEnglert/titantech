@@ -1,4 +1,12 @@
-import { quoteCtaBand, serviceCardRows, services, statItems } from './lib/content'
+import {
+  equipment,
+  industries,
+  materialGroups,
+  quoteCtaBand,
+  serviceCardRows,
+  services,
+  statItems,
+} from './lib/content'
 import { findMediaId, photoStems } from './lib/find-media'
 import { getSeedPayload, runSeed } from './lib/payload-client'
 import { textToLexical } from './lib/text-to-lexical'
@@ -10,18 +18,27 @@ runSeed('Seed services page', async () => {
   // Pair each capability with the machine that actually performs it, rather
   // than decorating every section with the same photo.
   const byAnchor: Record<string, string | null> = {
-    'three-axis-milling': await findMediaId(payload, photoStems.mill),
-    'multi-axis-machining': await findMediaId(payload, photoStems.fiveAxis),
+    'five-axis-machining': await findMediaId(payload, photoStems.fiveAxis),
+    'cnc-milling': await findMediaId(payload, photoStems.mill),
     'cnc-turning': await findMediaId(payload, photoStems.lathe),
+  }
+
+  const equipmentItems = []
+  for (const machine of equipment) {
+    equipmentItems.push({
+      title: machine.title,
+      detail: machine.detail,
+      image: await findMediaId(payload, machine.stem),
+    })
   }
 
   await upsertPage(payload, {
     slug: 'services',
     title: 'Services',
     meta: {
-      title: 'CNC Machining Services — Milling, Turning, Engraving | Tucson, AZ',
+      title: '5-Axis CNC Machining, Milling & Turning Services | Tucson, AZ',
       description:
-        '3-axis milling, 4th & 5th axis machining, CNC turning, laser engraving, custom parts and repair work — all programmed, cut and inspected in-house in Tucson, AZ.',
+        'Advanced 5-axis CNC machining, 3-axis and 3+2 milling, CNC turning, laser engraving and part marking. Complex, tight-tolerance components from prototype to production in Tucson, AZ.',
     },
     content: [
       {
@@ -29,7 +46,7 @@ runSeed('Seed services page', async () => {
         eyebrow: 'Capabilities',
         title: 'What we machine',
         intro:
-          'One shop, full coverage — from one-off prototypes to repeatable production runs. Every job is programmed, cut, and inspected in-house.',
+          'Precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components — programmed, cut and inspected in-house.',
         background: 'none',
         topDivider: false,
       },
@@ -42,24 +59,56 @@ runSeed('Seed services page', async () => {
       },
       // Each capability gets a full section with its own anchor, so the footer
       // links (/services#cnc-turning) land on real content rather than a card.
-      ...services.flatMap((service, index) => [
-        {
-          blockType: 'mediaWithText' as const,
-          image: byAnchor[service.anchor] ?? undefined,
-          imagePosition: index % 2 === 0 ? ('left' as const) : ('right' as const),
-          eyebrow: `0${index + 1}`,
-          title: service.title,
-          body: textToLexical(service.long),
-          background: index % 2 === 0 ? ('none' as const) : ('tint' as const),
-          topDivider: true,
-          blockSettings: { anchorId: service.anchor },
-        },
-      ]),
+      ...services.map((service, index) => ({
+        blockType: 'mediaWithText' as const,
+        image: byAnchor[service.anchor] ?? undefined,
+        imagePosition: index % 2 === 0 ? ('left' as const) : ('right' as const),
+        eyebrow: `0${index + 1}`,
+        title: service.title,
+        body: textToLexical(service.long),
+        background: index % 2 === 0 ? ('none' as const) : ('tint' as const),
+        topDivider: true,
+        blockSettings: { anchorId: service.anchor },
+      })),
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Equipment',
+        title: 'The machines behind the work',
+        intro:
+          'Modern Haas CNC equipment, programmed and maintained in-house. What each machine is for, and what it lets us take on.',
+        items: equipmentItems,
+        columns: '3',
+        background: 'none',
+        topDivider: true,
+        blockSettings: { anchorId: 'equipment' },
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Materials',
+        title: 'Materials we machine',
+        intro:
+          'Common production grades through demanding alloys and engineering plastics. If what you need is not listed, ask — the answer is usually yes.',
+        items: materialGroups,
+        columns: '3',
+        background: 'tint',
+        topDivider: true,
+        blockSettings: { anchorId: 'materials' },
+      },
+      {
+        blockType: 'capabilityGrid',
+        eyebrow: 'Industries',
+        title: 'Who we machine for',
+        items: industries,
+        columns: 'auto',
+        background: 'none',
+        topDivider: true,
+        blockSettings: { anchorId: 'industries' },
+      },
       {
         blockType: 'richText',
         width: 'narrow',
         content: textToLexical(
-          'Materials we run\n\n- Aluminum\n- Steel\n- Stainless\n- Brass and bronze\n- Titanium\n- Engineering plastics\n\nIf what you need is not on that list, ask. Most of the time the answer is yes, and when it is not we will tell you straight rather than learning it on your part.\n\nTolerances\n\nWe hold to ±0.0005" where a drawing calls for it. Not every feature needs that, and quoting a whole part at its tightest tolerance is how job shops end up expensive for no reason — so tell us which dimensions are critical and we will put the time there.',
+          'Tolerances\n\nWe hold to ±0.0005" where a drawing calls for it. Not every feature needs that, and quoting a whole component at its tightest tolerance is how a shop ends up expensive for no reason — so call out the dimensions that are critical and we will put the time there.\n\nInspection happens in-house alongside programming and machining, which is what lets us catch a problem while the setup is still on the machine.\n\nWhat to send\n\nA drawing or a STEP file and a quantity is enough to start. If the component has a critical fit, a surface finish requirement, or a material you have already qualified, include it — those are the constraints that change how a part is programmed and fixtured.',
         ),
         background: 'none',
         topDivider: true,

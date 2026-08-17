@@ -128,8 +128,11 @@ export function Hero({
             )}
 
             {specRows.length > 0 && (
+              // `items-end` so the row reads as one strip: a spec with a label
+              // sits taller than one without, and aligning on the value
+              // baseline is what keeps the divider rules even.
               <dl
-                className="reveal-load mt-9 flex flex-wrap gap-x-8 gap-y-5 text-sm"
+                className="reveal-load mt-9 flex flex-wrap items-end gap-x-8 gap-y-5 text-sm"
                 style={{ animationDelay: delay.specs }}
               >
                 {specRows.map((spec, index) => (
@@ -137,9 +140,13 @@ export function Hero({
                     key={spec.id ?? index}
                     className={cn(index > 0 && 'border-l border-graphite-500 pl-8')}
                   >
-                    <dt className="mb-1 text-[10px] tracking-[0.18em] text-steel-300 uppercase">
-                      {spec.label}
-                    </dt>
+                    {/* Omitted entirely when unlabelled — an empty <dt> still
+                        reserves its margin and knocks the value out of line. */}
+                    {spec.label && (
+                      <dt className="mb-1 text-[10px] tracking-[0.18em] text-steel-300 uppercase">
+                        {spec.label}
+                      </dt>
+                    )}
                     <dd className="tabular font-display text-2xl font-extrabold text-steel-50">
                       {spec.value}
                       {spec.accentSuffix && <span className="text-ember">{spec.accentSuffix}</span>}

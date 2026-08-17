@@ -5,7 +5,7 @@ import { getSeedPayload, runSeed, seedContext } from './lib/payload-client'
 const settings = {
   businessName: 'Titantech CNC',
   tagline:
-    'Precision machining job shop in Tucson, AZ. Tight tolerances, fast lead times, automotive and general parts.',
+    'Precision 5-axis CNC machining in Tucson, AZ. Complex, tight-tolerance components from prototype to production.',
   phone: '520-668-1600',
   email: 'titantechcnc@gmail.com',
   address: {

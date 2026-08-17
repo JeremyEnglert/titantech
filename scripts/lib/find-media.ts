@@ -29,5 +29,5 @@ export async function findMediaId(payload: Payload, stem: string): Promise<strin
 export const photoStems = {
   fiveAxis: 'haas-umc-500ss',
   lathe: 'haas-tl-1p-lathe',
-  mill: 'haas-vf-6ss-mill',
+  mill: 'haas-vf-2ss-mill',
 } as const

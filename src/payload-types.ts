@@ -184,7 +184,10 @@ export interface Page {
              */
             specs?:
               | {
-                  label: string;
+                  /**
+                   * Leave blank to show the value on its own.
+                   */
+                  label?: string | null;
                   value: string;
                   /**
                    * Appended to the value in ember — a unit mark such as " or °.
@@ -542,6 +545,85 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'stats';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * Sits to the right of the heading on desktop, under it on mobile. Two short sentences at most.
+             */
+            intro?: string | null;
+            items?:
+              | {
+                  title: string;
+                  /**
+                   * Optional. The supporting line under the title — grades, specs, or what the machine does. Leave empty for a title-only tile, e.g. an industry served.
+                   */
+                  detail?: string | null;
+                  /**
+                   * Optional 4:3 photo at the top of the tile — used for equipment. When set, it replaces the icon.
+                   */
+                  image?: (string | null) | Media;
+                  /**
+                   * Optional. Drawn inline so it inherits the ember accent — see components/icons.tsx. Ignored when an image is set.
+                   */
+                  icon?:
+                    | (
+                        | 'mill'
+                        | 'multiAxis'
+                        | 'lathe'
+                        | 'laser'
+                        | 'customPart'
+                        | 'repair'
+                        | 'phone'
+                        | 'mail'
+                        | 'clock'
+                        | 'pin'
+                        | 'image'
+                        | 'arrowRight'
+                        | 'instagram'
+                      )
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Auto picks the column count that leaves the fewest gaps in the last row — a gap shows as an empty lit cell.
+             */
+            columns?: ('auto' | '2' | '3' | '4') | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'capabilityGrid';
           }
         | {
             /**
@@ -1721,6 +1803,36 @@ export interface PagesSelect<T extends boolean = true> {
                     accentSuffix?: T;
                     id?: T;
                   };
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        capabilityGrid?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              intro?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    detail?: T;
+                    image?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              columns?: T;
               background?: T;
               topDivider?: T;
               joinPrevious?: T;
