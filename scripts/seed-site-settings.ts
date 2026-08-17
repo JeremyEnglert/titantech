@@ -1,0 +1,40 @@
+import { getSeedPayload, runSeed, seedContext } from './lib/payload-client'
+
+// Every NAP fact on the site comes from here — header, footer, contact cards
+// and the LocalBusiness JSON-LD all read this record.
+const settings = {
+  businessName: 'Titantech CNC',
+  tagline:
+    'Precision machining job shop in Tucson, AZ. Tight tolerances, fast lead times, automotive and general parts.',
+  phone: '520-668-1600',
+  email: 'titantechcnc@gmail.com',
+  address: {
+    street: '227 E Valencia Rd',
+    suite: 'Ste 230',
+    city: 'Tucson',
+    state: 'AZ',
+    zip: '85706',
+    latitude: 32.1,
+    longitude: -110.9,
+  },
+  hours: {
+    days: 'Mon–Fri',
+    open: '7:00am',
+    close: '5:00pm',
+    schemaHours: 'Mo-Fr 07:00-17:00',
+  },
+  mapEmbedUrl:
+    'https://www.google.com/maps?q=227+E+Valencia+Rd+Ste+230,+Tucson,+AZ+85706&output=embed',
+}
+
+runSeed('Seed site settings', async () => {
+  const payload = await getSeedPayload()
+
+  await payload.updateGlobal({
+    slug: 'site-settings',
+    data: settings,
+    ...seedContext,
+  })
+
+  console.log(`  ${settings.businessName} · ${settings.phone} · ${settings.address.city}`)
+})

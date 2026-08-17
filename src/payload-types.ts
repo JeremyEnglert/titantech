@@ -69,8 +69,12 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    menus: Menu;
     users: User;
     media: Media;
+    'quote-attachments': QuoteAttachment;
+    forms: Form;
+    'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -81,8 +85,12 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    menus: MenusSelect<false> | MenusSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'quote-attachments': QuoteAttachmentsSelect<false> | QuoteAttachmentsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -93,8 +101,12 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -137,35 +149,810 @@ export interface Page {
   id: string;
   title: string;
   content?:
-    | {
-        title: string;
-        subtitle?: string | null;
-        buttons?:
-          | {
-              label: string;
-              link: string;
-              variant?: ('default' | 'secondary' | 'outline') | null;
-              id?: string | null;
-            }[]
-          | null;
-        blockSettings?: {
-          /**
-           * Makes the gap above this block larger than the standard one.
-           */
-          spacingTop?: ('0' | '8' | '16' | '24') | null;
-          /**
-           * Makes the gap below this block larger than the standard one.
-           */
-          spacingBottom?: ('0' | '8' | '16' | '24') | null;
-          /**
-           * When enabled, this block will not be displayed on the front-end.
-           */
-          hidden?: boolean | null;
-        };
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'hero';
-      }[]
+    | (
+        | {
+            /**
+             * The coordinate line above the headline.
+             */
+            eyebrow?: string | null;
+            title: string;
+            /**
+             * Starts a second line and renders in ember.
+             */
+            titleAccent?: string | null;
+            /**
+             * Copy that follows the accent word on the same line.
+             */
+            titleAfter?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * The inline spec sheet under the intro. Up to four.
+             */
+            specs?:
+              | {
+                  label: string;
+                  value: string;
+                  /**
+                   * Appended to the value in ember — a unit mark such as " or °.
+                   */
+                  accentSuffix?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            buttons?:
+              | {
+                  label: string;
+                  /**
+                   * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+                   */
+                  linkType?: ('custom' | 'internal') | null;
+                  url?: string | null;
+                  doc?:
+                    | ({
+                        relationTo: 'pages';
+                        value: string | Page;
+                      } | null)
+                    | ({
+                        relationTo: 'posts';
+                        value: string | Post;
+                      } | null)
+                    | ({
+                        relationTo: 'media';
+                        value: string | Media;
+                      } | null);
+                  newTab?: boolean | null;
+                  variant?: ('default' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Portrait shop photo. Left empty, the block draws a placeholder frame.
+             */
+            image?: (string | null) | Media;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            eyebrow?: string | null;
+            /**
+             * The page heading. Rendered as the page’s only h1.
+             */
+            title: string;
+            /**
+             * Optional. One or two sentences under the heading.
+             */
+            intro?: string | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pageBanner';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * Sits to the right of the heading on desktop, under it on mobile. Two short sentences at most.
+             */
+            intro?: string | null;
+            cards?:
+              | {
+                  /**
+                   * Drawn inline so it can flip from steel to ember on hover — see components/icons.tsx.
+                   */
+                  icon?:
+                    | (
+                        | 'mill'
+                        | 'multiAxis'
+                        | 'lathe'
+                        | 'laser'
+                        | 'customPart'
+                        | 'repair'
+                        | 'phone'
+                        | 'mail'
+                        | 'clock'
+                        | 'pin'
+                        | 'image'
+                        | 'arrowRight'
+                        | 'instagram'
+                      )
+                    | null;
+                  title: string;
+                  body?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  /**
+                   * Optional. When set, the whole card becomes clickable.
+                   */
+                  link?: {
+                    /**
+                     * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+                     */
+                    linkType?: ('custom' | 'internal') | null;
+                    url?: string | null;
+                    doc?:
+                      | ({
+                          relationTo: 'pages';
+                          value: string | Page;
+                        } | null)
+                      | ({
+                          relationTo: 'posts';
+                          value: string | Post;
+                        } | null)
+                      | ({
+                          relationTo: 'media';
+                          value: string | Media;
+                        } | null);
+                    newTab?: boolean | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Auto is the design’s 3-up grid, narrowed when there are fewer cards than columns.
+             */
+            columns?: ('auto' | '2' | '3' | '4') | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'serviceCards';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * The short paragraph under the heading, in the left column.
+             */
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Optional 4:3 shop-floor photo. Leaving it empty renders the placeholder box.
+             */
+            image?: (string | null) | Media;
+            items?:
+              | {
+                  /**
+                   * The oversized ember index beside the row, e.g. A1.
+                   */
+                  marker?: string | null;
+                  title: string;
+                  body?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'valueProps';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            items?:
+              | {
+                  label: string;
+                  value: string;
+                  /**
+                   * Shown in ember directly after the value, e.g. " or +.
+                   */
+                  accentSuffix?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            /**
+             * Shown in a 4:3 hairline frame. Leave empty to show a placeholder.
+             */
+            image?: (string | null) | Media;
+            /**
+             * Which side the image sits on from the large breakpoint up.
+             */
+            imagePosition?: ('left' | 'right') | null;
+            /**
+             * The short line above the heading.
+             */
+            eyebrow?: string | null;
+            title?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Optional.
+             */
+            button?: {
+              label?: string | null;
+              /**
+               * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+               */
+              linkType?: ('custom' | 'internal') | null;
+              url?: string | null;
+              doc?:
+                | ({
+                    relationTo: 'pages';
+                    value: string | Page;
+                  } | null)
+                | ({
+                    relationTo: 'posts';
+                    value: string | Post;
+                  } | null)
+                | ({
+                    relationTo: 'media';
+                    value: string | Media;
+                  } | null);
+              newTab?: boolean | null;
+            };
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaWithText';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            /**
+             * Narrow keeps long-form copy at a readable line length; full lets it run the width of the section.
+             */
+            width?: ('narrow' | 'full') | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * Shown above the fields.
+             */
+            intro?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            form: string | Form;
+            /**
+             * Optional panel beside the form — used on the quote page for the phone/email fallback.
+             */
+            aside?: {
+              title?: string | null;
+              body?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+            };
+            layout?: ('split' | 'stacked') | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'form';
+          }
+        | {
+            /**
+             * The short line above the headline, set in ember with a rule beside it.
+             */
+            eyebrow?: string | null;
+            /**
+             * A line break in this field renders as a line break on the page — press Enter where the headline should split.
+             */
+            title: string;
+            /**
+             * A short paragraph beneath the headline.
+             */
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            buttons?:
+              | {
+                  label?: string | null;
+                  /**
+                   * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+                   */
+                  linkType?: ('custom' | 'internal') | null;
+                  url?: string | null;
+                  doc?:
+                    | ({
+                        relationTo: 'pages';
+                        value: string | Page;
+                      } | null)
+                    | ({
+                        relationTo: 'posts';
+                        value: string | Post;
+                      } | null)
+                    | ({
+                        relationTo: 'media';
+                        value: string | Media;
+                      } | null);
+                  newTab?: boolean | null;
+                  variant?: ('default' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'ctaBand';
+          }
+        | {
+            /**
+             * The short line above the heading.
+             */
+            eyebrow?: string | null;
+            title?: string | null;
+            cards?:
+              | {
+                  icon?:
+                    | (
+                        | 'mill'
+                        | 'multiAxis'
+                        | 'lathe'
+                        | 'laser'
+                        | 'customPart'
+                        | 'repair'
+                        | 'phone'
+                        | 'mail'
+                        | 'clock'
+                        | 'pin'
+                        | 'image'
+                        | 'arrowRight'
+                        | 'instagram'
+                      )
+                    | null;
+                  /**
+                   * The small uppercase kicker above the value.
+                   */
+                  label: string;
+                  /**
+                   * The large display value. A line break here renders as a line break, so a street address can sit on two lines.
+                   */
+                  value: string;
+                  /**
+                   * Optional smaller line beneath the value.
+                   */
+                  secondary?: string | null;
+                  /**
+                   * Optional. When set, the value becomes a link — a tel: or mailto: URL, or an internal page.
+                   */
+                  link?: {
+                    /**
+                     * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+                     */
+                    linkType?: ('custom' | 'internal') | null;
+                    url?: string | null;
+                    doc?:
+                      | ({
+                          relationTo: 'pages';
+                          value: string | Page;
+                        } | null)
+                      | ({
+                          relationTo: 'posts';
+                          value: string | Post;
+                        } | null)
+                      | ({
+                          relationTo: 'media';
+                          value: string | Media;
+                        } | null);
+                    newTab?: boolean | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Optional. Paste only the src URL from a Google Maps embed, not the whole iframe tag. Leave empty to show a placeholder.
+             */
+            mapEmbedUrl?: string | null;
+            /**
+             * Anything other than "None" paints a surface, which also switches this block from an outer gap to interior padding.
+             */
+            background?: ('none' | 'tint' | 'deep' | 'sheen') | null;
+            /**
+             * Draws the thin CAD rule that separates bands in the design.
+             */
+            topDivider?: boolean | null;
+            /**
+             * Removes the space above this block so it reads as part of the previous one — e.g. a stat row sitting directly under the section it belongs to. Without this, two painted blocks each contribute their own interior padding and the seam gets twice as tall as a normal gap.
+             */
+            joinPrevious?: boolean | null;
+            blockSettings?: {
+              /**
+               * Optional. Adds an ID to this block so it can be linked to directly, e.g. an ID of "services" is linked as /page-slug#services.
+               */
+              anchorId?: string | null;
+              /**
+               * Makes the gap above this block larger than the standard one.
+               */
+              spacingTop?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * Makes the gap below this block larger than the standard one.
+               */
+              spacingBottom?: ('0' | '8' | '16' | '24') | null;
+              /**
+               * When enabled, this block will not be displayed on the front-end.
+               */
+              hidden?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactCards';
+          }
+      )[]
     | null;
   seo?: {
     title?: string | null;
@@ -178,38 +965,18 @@ export interface Page {
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  parent?: (string | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -253,6 +1020,66 @@ export interface Post {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  /**
+   * What the image shows, for screen readers and search. Describe the subject, not the file — "Haas VF-2SS cutting an aluminum bracket", not "shop photo 3".
+   */
+  alt: string;
+  /**
+   * Optional. Shown beneath the image where a block supports it.
+   */
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    wide?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -276,6 +1103,283 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: string;
+  title: string;
+  fields?:
+    | (
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkbox';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'country';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'email';
+          }
+        | {
+            message?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'message';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'number';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            placeholder?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'select';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'state';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textarea';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            helpText?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'fileUpload';
+          }
+      )[]
+    | null;
+  submitButtonLabel?: string | null;
+  confirmationType?: ('message' | 'redirect') | null;
+  confirmationMessage?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  redirect?: {
+    url: string;
+  };
+  emails?:
+    | {
+        emailTo?: string | null;
+        cc?: string | null;
+        bcc?: string | null;
+        replyTo?: string | null;
+        emailFrom?: string | null;
+        subject: string;
+        message?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus".
+ */
+export interface Menu {
+  id: string;
+  name: string;
+  location?: ('main' | 'footer-services' | 'footer-connect') | null;
+  items?:
+    | {
+        label: string;
+        /**
+         * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+         */
+        linkType?: ('custom' | 'internal') | null;
+        url?: string | null;
+        doc?:
+          | ({
+              relationTo: 'pages';
+              value: string | Page;
+            } | null)
+          | ({
+              relationTo: 'posts';
+              value: string | Post;
+            } | null)
+          | ({
+              relationTo: 'media';
+              value: string | Media;
+            } | null);
+        newTab?: boolean | null;
+        children?:
+          | {
+              label: string;
+              /**
+               * A custom URL also covers tel: and mailto: links. An internal link survives the target page being renamed.
+               */
+              linkType?: ('custom' | 'internal') | null;
+              url?: string | null;
+              doc?:
+                | ({
+                    relationTo: 'pages';
+                    value: string | Page;
+                  } | null)
+                | ({
+                    relationTo: 'posts';
+                    value: string | Post;
+                  } | null)
+                | ({
+                    relationTo: 'media';
+                    value: string | Media;
+                  } | null);
+              newTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Files customers attached to a quote request.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-attachments".
+ */
+export interface QuoteAttachment {
+  id: string;
+  /**
+   * Captured from the quote form so an orphaned file can still be traced.
+   */
+  submittedBy?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: string;
+  form: string | Form;
+  submissionData?:
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -402,12 +1506,28 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'menus';
+        value: string | Menu;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'quote-attachments';
+        value: string | QuoteAttachment;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: string | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: string | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -463,19 +1583,297 @@ export interface PagesSelect<T extends boolean = true> {
         hero?:
           | T
           | {
+              eyebrow?: T;
               title?: T;
-              subtitle?: T;
+              titleAccent?: T;
+              titleAfter?: T;
+              body?: T;
+              specs?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    accentSuffix?: T;
+                    id?: T;
+                  };
               buttons?:
                 | T
                 | {
                     label?: T;
-                    link?: T;
+                    linkType?: T;
+                    url?: T;
+                    doc?: T;
+                    newTab?: T;
                     variant?: T;
                     id?: T;
                   };
+              image?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
               blockSettings?:
                 | T
                 | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        pageBanner?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              intro?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        serviceCards?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              intro?: T;
+              cards?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    body?: T;
+                    link?:
+                      | T
+                      | {
+                          linkType?: T;
+                          url?: T;
+                          doc?: T;
+                          newTab?: T;
+                        };
+                    id?: T;
+                  };
+              columns?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        valueProps?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              image?: T;
+              items?:
+                | T
+                | {
+                    marker?: T;
+                    title?: T;
+                    body?: T;
+                    id?: T;
+                  };
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    accentSuffix?: T;
+                    id?: T;
+                  };
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mediaWithText?:
+          | T
+          | {
+              image?: T;
+              imagePosition?: T;
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              button?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    url?: T;
+                    doc?: T;
+                    newTab?: T;
+                  };
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              width?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        form?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              intro?: T;
+              form?: T;
+              aside?:
+                | T
+                | {
+                    title?: T;
+                    body?: T;
+                  };
+              layout?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        ctaBand?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    url?: T;
+                    doc?: T;
+                    newTab?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
+                    spacingTop?: T;
+                    spacingBottom?: T;
+                    hidden?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        contactCards?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              cards?:
+                | T
+                | {
+                    icon?: T;
+                    label?: T;
+                    value?: T;
+                    secondary?: T;
+                    link?:
+                      | T
+                      | {
+                          linkType?: T;
+                          url?: T;
+                          doc?: T;
+                          newTab?: T;
+                        };
+                    id?: T;
+                  };
+              mapEmbedUrl?: T;
+              background?: T;
+              topDivider?: T;
+              joinPrevious?: T;
+              blockSettings?:
+                | T
+                | {
+                    anchorId?: T;
                     spacingTop?: T;
                     spacingBottom?: T;
                     hidden?: T;
@@ -494,6 +1892,15 @@ export interface PagesSelect<T extends boolean = true> {
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -524,6 +1931,36 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus_select".
+ */
+export interface MenusSelect<T extends boolean = true> {
+  name?: T;
+  location?: T;
+  items?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        url?: T;
+        doc?: T;
+        newTab?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              url?: T;
+              doc?: T;
+              newTab?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -551,6 +1988,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -565,6 +2003,36 @@ export interface MediaSelect<T extends boolean = true> {
   sizes?:
     | T
     | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        wide?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
         og?:
           | T
           | {
@@ -576,6 +2044,184 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-attachments_select".
+ */
+export interface QuoteAttachmentsSelect<T extends boolean = true> {
+  submittedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  title?: T;
+  fields?:
+    | T
+    | {
+        checkbox?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        country?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        email?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        message?:
+          | T
+          | {
+              message?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        select?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              placeholder?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        state?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        fileUpload?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              helpText?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  submitButtonLabel?: T;
+  confirmationType?: T;
+  confirmationMessage?: T;
+  redirect?:
+    | T
+    | {
+        url?: T;
+      };
+  emails?:
+    | T
+    | {
+        emailTo?: T;
+        cc?: T;
+        bcc?: T;
+        replyTo?: T;
+        emailFrom?: T;
+        subject?: T;
+        message?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  form?: T;
+  submissionData?:
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -647,6 +2293,91 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: string;
+  businessName: string;
+  /**
+   * One line, used in the footer and as an OG description fallback.
+   */
+  tagline?: string | null;
+  phone: string;
+  email: string;
+  address?: {
+    street?: string | null;
+    suite?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zip?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+  };
+  hours?: {
+    days?: string | null;
+    open?: string | null;
+    close?: string | null;
+    /**
+     * Schema.org openingHours format, e.g. "Mo-Fr 07:00-17:00". Used only in the JSON-LD Google reads.
+     */
+    schemaHours?: string | null;
+  };
+  social?:
+    | {
+        platform: 'instagram' | 'facebook' | 'linkedin';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The src of a Google Maps embed iframe. Leave blank to hide the map.
+   */
+  mapEmbedUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  businessName?: T;
+  tagline?: T;
+  phone?: T;
+  email?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        suite?: T;
+        city?: T;
+        state?: T;
+        zip?: T;
+        latitude?: T;
+        longitude?: T;
+      };
+  hours?:
+    | T
+    | {
+        days?: T;
+        open?: T;
+        close?: T;
+        schemaHours?: T;
+      };
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  mapEmbedUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

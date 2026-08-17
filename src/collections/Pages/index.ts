@@ -6,7 +6,16 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../utilities/populate-published-at'
 import { generatePreviewPath } from '../../utilities/generate-preview-path'
 import { revalidateDelete, revalidatePage } from './hooks/revalidate-page'
+import { ContactCardsBlock } from '@/blocks/contact-cards/config'
+import { CtaBandBlock } from '@/blocks/cta-band/config'
+import { FormBlock } from '@/blocks/form/config'
 import { HeroBlock } from '@/blocks/hero/config'
+import { MediaWithTextBlock } from '@/blocks/media-with-text/config'
+import { PageBannerBlock } from '@/blocks/page-banner/config'
+import { RichTextBlock } from '@/blocks/rich-text/config'
+import { ServiceCardsBlock } from '@/blocks/service-cards/config'
+import { StatsBlock } from '@/blocks/stats/config'
+import { ValuePropsBlock } from '@/blocks/value-props/config'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -66,7 +75,20 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'content',
               type: 'blocks',
-              blocks: [HeroBlock],
+              // Ordered the way a page is usually built: the two <h1> blocks
+              // first, then content, then the closing calls to action.
+              blocks: [
+                HeroBlock,
+                PageBannerBlock,
+                ServiceCardsBlock,
+                ValuePropsBlock,
+                StatsBlock,
+                MediaWithTextBlock,
+                RichTextBlock,
+                FormBlock,
+                CtaBandBlock,
+                ContactCardsBlock,
+              ],
               required: false,
               label: false,
             },

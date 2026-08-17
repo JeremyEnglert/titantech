@@ -1,81 +1,88 @@
+import React from 'react'
 import type {
   DefaultNodeTypes,
-  SerializedBlockNode,
   SerializedLinkNode,
   DefaultTypedEditorState,
 } from '@payloadcms/richtext-lexical'
 import type { SerializedEditorState } from 'lexical'
-import { JSXConvertersFunction, LinkJSXConverter, RichText as ConvertRichText } from '@payloadcms/richtext-lexical/react'
-import type { Page, Post } from '@/payload-types'
-import { Hero } from '@/components/hero'
+import {
+  JSXConvertersFunction,
+  LinkJSXConverter,
+  RichText as ConvertRichText,
+} from '@payloadcms/richtext-lexical/react'
+
 import { cn } from '@/lib/utils'
 
-type HeroBlockType = Extract<NonNullable<Page['content']>[number], { blockType: 'hero' }>
-
-type NodeTypes =
-  | DefaultNodeTypes
-  | SerializedBlockNode<HeroBlockType>
-
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
-  const { value, relationTo } = linkNode.fields.doc!
-  if (typeof value !== 'object') {
-    throw new Error('Expected value to be an object')
+  const doc = linkNode.fields.doc
+  if (!doc || typeof doc.value !== 'object' || doc.value === null) return '#'
+
+  const value = doc.value as { slug?: string | null; url?: string | null; filename?: string | null }
+
+  if (doc.relationTo === 'media') {
+    return value.url ?? (value.filename ? `/api/media/file/${value.filename}` : '#')
   }
-  const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
+  if (!value.slug) return '#'
+  if (doc.relationTo === 'posts') return `/posts/${value.slug}`
+  return value.slug === 'home' ? '/' : `/${value.slug}`
 }
 
-const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
+const jsxConverters: JSXConvertersFunction<DefaultNodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
-  blocks: {
-    hero: ({ node }) => {
-      const { subtitle, buttons, ...rest } = node.fields;
-      
-      // Transform buttons to match the expected type
-      const transformedButtons = buttons?.map(button => ({
-        label: button.label,
-        link: button.link,
-        variant: (button.variant || 'default') as 'default' | 'secondary' | 'outline'
-      }));
-      
-      // Wrap in a div that resets prose styles
-      return (
-        <div className="not-prose">
-          <Hero
-            disableInnerContainer
-            {...rest}
-            subtitle={subtitle || undefined}
-            buttons={transformedButtons}
-          />
-        </div>
-      );
-    },
-  },
 })
 
 type Props = {
-  data: DefaultTypedEditorState | SerializedEditorState | Post['content']
-  enableGutter?: boolean
+  data: DefaultTypedEditorState | SerializedEditorState | null | undefined
   enableProse?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
+/**
+ * Long-form prose. The `payload-richtext` class is the hook the typography
+ * overrides in globals.css hang off; `prose-invert` is unconditional because
+ * this site has no light mode.
+ */
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, data, ...rest } = props
+  const { className, enableProse = true, data, ...rest } = props
+  if (!data) return null
+
   return (
     <ConvertRichText
       converters={jsxConverters}
       data={data as SerializedEditorState}
       className={cn(
         'payload-richtext',
-        {
-          'container mx-auto px-4 md:px-6': enableGutter,
-          'max-w-none': !enableGutter,
-          'prose lg:prose-lg dark:prose-invert': enableProse,
-        },
+        enableProse &&
+          'prose prose-invert max-w-none prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-steel-50 prose-p:text-steel-200 prose-p:leading-relaxed prose-a:text-ember prose-a:no-underline hover:prose-a:underline prose-strong:text-steel-50 prose-li:text-steel-200 prose-hr:border-border',
         className,
       )}
       {...rest}
+    />
+  )
+}
+
+/**
+ * Short copy inside a block's own layout. Deliberately not `prose`: the
+ * surrounding block owns the measure and the type scale, and prose's own
+ * margins would fight the block's grid.
+ */
+export function BodyRichText({
+  data,
+  className,
+}: {
+  data: DefaultTypedEditorState | SerializedEditorState | null | undefined
+  className?: string
+}) {
+  if (!data) return null
+
+  return (
+    <ConvertRichText
+      converters={jsxConverters}
+      data={data as SerializedEditorState}
+      className={cn(
+        'payload-richtext text-sm leading-relaxed text-steel-300 [&_a]:text-ember [&_a:hover]:underline [&_p+p]:mt-3 [&_strong]:text-steel-50 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5',
+        className,
+      )}
     />
   )
 }

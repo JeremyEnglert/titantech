@@ -1,25 +1,38 @@
-import sharp from 'sharp'
-import {
-  lexicalEditor,
-  HeadingFeature,
-  InlineToolbarFeature,
-  HorizontalRuleFeature,
-} from '@payloadcms/richtext-lexical'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { buildConfig } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { s3Storage } from '@payloadcms/storage-s3'
-import { seoPlugin } from '@payloadcms/plugin-seo';
+import sharp from 'sharp'
+import { buildConfig } from 'payload'
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { seoPlugin } from '@payloadcms/plugin-seo'
+import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import { siteConfig } from './utilities/site-config'
+import { richTextEditor } from './fields/rich-text-tiers'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Menus } from './collections/Menus'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { QuoteAttachments } from './collections/QuoteAttachments'
+import { SiteSettings } from './globals/site-settings'
+import { fileUploadField } from './forms/fields/file-upload'
 
-const filename = fileURLToPath(import.meta.url) 
+const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Vercel's MongoDB Atlas integration injects MONGODB_URI; the project's own
+// convention (and every other Materiell site) is DATABASE_URI. Accept either
+// rather than renaming one of them.
+const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI || ''
+
+// Media lives on Vercel Blob in every deployed environment. Locally the token
+// is usually absent, and falling back to disk means `pnpm seed:media` works on
+// a fresh clone with nothing but Mongo running.
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+const resendKey = process.env.RESEND_API_KEY
 
 export default buildConfig({
   admin: {
@@ -28,40 +41,60 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  editor: lexicalEditor({
-    features: ({ defaultFeatures }) => [
-      ...defaultFeatures,
-      HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-      InlineToolbarFeature(),
-      HorizontalRuleFeature(),
-    ],
-  }),
-  collections: [Pages, Posts, Users, Media],
+  // The site-wide default editor is the editorial tier. Individual fields pick
+  // their own tier via richTextField() — see fields/rich-text-tiers.ts for why
+  // defaultFeatures is never spread.
+  editor: richTextEditor('editorial'),
+  collections: [Pages, Posts, Menus, Users, Media, QuoteAttachments],
+  globals: [SiteSettings],
+  email: resendKey
+    ? resendAdapter({
+        defaultFromAddress: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        defaultFromName: process.env.EMAIL_FROM_NAME || 'Titantech CNC',
+        apiKey: resendKey,
+      })
+    : undefined,
   plugins: [
-    s3Storage({
-      collections: {
-        media: true, // Enable for your media collection
+    ...(blobToken
+      ? [
+          vercelBlobStorage({
+            collections: { media: true, 'quote-attachments': true },
+            token: blobToken,
+          }),
+        ]
+      : []),
+    nestedDocsPlugin({
+      collections: ['pages'],
+      generateLabel: (_, doc) => doc.title as string,
+      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+    }),
+    formBuilderPlugin({
+      fields: {
+        // The plugin has no file field, and "email your drawing or STEP file"
+        // is the single most important thing this site asks a visitor to do.
+        payment: false,
+        fileUpload: fileUploadField,
       },
-      bucket: process.env.R2_BUCKET as string,
-      config: {
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID as string,
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY as string,
-        },
-        endpoint: process.env.R2_ENDPOINT as string,
-        region: 'auto', // R2 uses 'auto' as the region
-        forcePathStyle: true, // Required for R2
+      formOverrides: {
+        admin: { group: 'Forms' },
+      },
+      formSubmissionOverrides: {
+        admin: { group: 'Forms' },
+        fields: ({ defaultFields }) =>
+          defaultFields.map((field) => {
+            // The plugin ships `form` unindexed. Every "submissions for this
+            // form" read then collection-scans the whole table.
+            if (field.type === 'relationship' && field.name === 'form') {
+              return { ...field, index: true }
+            }
+            return field
+          }),
       },
     }),
     seoPlugin({
       generateTitle: ({ doc }) => doc.title,
       generateDescription: ({ doc }) => doc.excerpt,
-      generateURL: ({ doc }) => {
-        if (doc?.slug) {
-          return `${siteConfig.url}/${doc.slug}`
-        }
-        return siteConfig.url
-      },
+      generateURL: ({ doc }) => (doc?.slug ? `${siteConfig.url}/${doc.slug}` : siteConfig.url),
     }),
   ],
   secret: process.env.PAYLOAD_SECRET || '',
@@ -69,7 +102,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
+    url: databaseUri,
   }),
   sharp,
-}) 
+})

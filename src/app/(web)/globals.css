@@ -2,138 +2,264 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+/* This site is dark-only by design — there is no light mode and no theme
+ * toggle. The palette below IS the theme; `:root` carries it directly rather
+ * than a `.dark` class, so nothing can flash white before hydration. */
 
 @theme inline {
+  /* Raw Titantech palette — bg-graphite-850, text-steel-200, border-ember … */
+  --color-graphite-900: var(--graphite-900);
+  --color-graphite-850: var(--graphite-850);
+  --color-graphite-800: var(--graphite-800);
+  --color-graphite-700: var(--graphite-700);
+  --color-graphite-600: var(--graphite-600);
+  --color-graphite-500: var(--graphite-500);
+  --color-graphite-400: var(--graphite-400);
+  --color-steel-300: var(--steel-300);
+  --color-steel-200: var(--steel-200);
+  --color-steel-100: var(--steel-100);
+  --color-steel-50: var(--steel-50);
+  --color-ember: var(--ember);
+  --color-ember-soft: var(--ember-soft);
+  --color-ember-deep: var(--ember-deep);
+
+  /* Semantic tokens — mapped onto the palette below. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Saira Condensed is the industrial display face; JetBrains Mono is the
+   * body/spec face and the site default — this is a machine shop, the
+   * monospace IS the voice. Both loaded via next/font in (web)/layout.tsx. */
+  --font-display: var(--font-saira-condensed), "Saira Condensed", sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Square by design — machined edges, no rounding anywhere. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
+  --radius: 0px;
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Near-black graphite base + brushed-steel grays, sampled from the design. */
+  --graphite-900: #0b0c0e;
+  --graphite-850: #0e0f12;
+  --graphite-800: #121317;
+  --graphite-700: #181a1f;
+  --graphite-600: #1f2228;
+  --graphite-500: #272b33;
+  --graphite-400: #363b45;
+
+  --steel-300: #7c828d;
+  --steel-200: #9aa1ac;
+  --steel-100: #c3c9d2;
+  --steel-50: #e6e9ee;
+
+  /* ONE hot accent, sampled from the Titantech logo. Used sparingly: rules,
+   * numerals, the primary CTA, and hover states. */
+  --ember: #d62828;
+  --ember-soft: #e23b3b;
+  --ember-deep: #a81f1f;
+
+  --background: var(--graphite-900);
+  --foreground: var(--steel-100);
+  --card: var(--graphite-850);
+  --card-foreground: var(--steel-100);
+  --popover: var(--graphite-850);
+  --popover-foreground: var(--steel-100);
+  --primary: var(--ember);
+  --primary-foreground: #ffffff;
+  --secondary: var(--graphite-800);
+  --secondary-foreground: var(--steel-50);
+  --muted: var(--graphite-800);
+  --muted-foreground: var(--steel-300);
+  --accent: var(--ember);
+  --accent-foreground: #ffffff;
+  --destructive: var(--ember-soft);
+  /* The CAD hairline: steel at 18%. Every border on the site is this. */
+  --border: rgba(124, 130, 141, 0.18);
+  --input: rgba(124, 130, 141, 0.28);
+  --ring: var(--ember);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-mono antialiased;
+  }
+
+  /* Strong, unmissable ember ring. The design leans on hairlines everywhere,
+   * so the default faint outline would be invisible against them. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--ember);
+    color: var(--graphite-900);
   }
 }
 
 /* The site-wide gap between blocks. TRANSPARENT blocks (no background of
- * their own — the page shows through) apply this margin to their root; when
- * two of them meet, the browser collapses the touching margins into ONE gap,
- * so every gap on the page is the same size. PAINTED blocks (bands, tints,
- * heroes) apply nothing — their breathing room is interior padding inside
- * the paint, and their air comes from their neighbors' margins, which is why
- * painted blocks stack flush and heroes meet the header. Editor Extra
- * Spacing renders as a larger wrapper margin that outbids this one.
- * Tune this one line to change block spacing across the whole site.
+ * their own — the machined page grid shows through) apply this margin to
+ * their root; when two of them meet, the browser collapses the touching
+ * margins into ONE gap, so every gap on the page is the same size. PAINTED
+ * blocks (tints, sheen bands, heroes) apply nothing — their breathing room is
+ * interior padding inside the paint, and their air comes from their
+ * neighbors' margins, which is why painted blocks stack flush and the hero
+ * meets the header. Editor Extra Spacing renders as a larger wrapper margin
+ * that outbids this one. Tune this one line to change block spacing sitewide.
+ *
+ * Matches the design's `py-20 lg:py-28` section rhythm.
  *
  * Collapsing requires normal block flow: never make the blocks container
  * flex/grid or give it gap/space-y — every gap would double. */
 @utility default-block-margin {
-  @apply my-16 md:my-24;
+  @apply my-20 lg:my-28;
+}
+
+/* Interior padding for PAINTED blocks — the same rhythm, expressed as padding
+ * inside the paint rather than margin outside it. */
+@utility painted-block-padding {
+  @apply py-20 lg:py-28;
+}
+
+/* ---- Machined grid / CAD blueprint background ---- */
+@utility bg-machined {
+  background-color: var(--graphite-900);
+  background-image:
+    linear-gradient(rgba(124, 130, 141, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 130, 141, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: -1px -1px;
+}
+
+/* Two-scale variant: a coarse 112px grid over a fine 28px one, so the surface
+ * reads as drafting paper rather than graph paper. */
+@utility bg-crosshatch {
+  background-image:
+    linear-gradient(rgba(124, 130, 141, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 130, 141, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(124, 130, 141, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 130, 141, 0.025) 1px, transparent 1px);
+  background-size: 112px 112px, 112px 112px, 28px 28px, 28px 28px;
+}
+
+/* ---- Fine film grain, generated by an inline SVG turbulence filter so it
+ *      costs no network request and scales to any viewport. Requires the
+ *      element to be `relative` — the overlay is an absolutely-positioned
+ *      pseudo-element. ---- */
+@utility grain {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ---- Brushed-steel metallic sheen: a top highlight, vertical brush lines,
+ *      and a diagonal base gradient. ---- */
+@utility steel-sheen {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 18%, rgba(0, 0, 0, 0.25) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 3px),
+    linear-gradient(120deg, #1c1f25 0%, #14161a 40%, #1a1d22 70%, #101216 100%);
+}
+
+/* ---- Hot ember edge glow, used only on hover states ---- */
+@utility ember-glow {
+  box-shadow:
+    0 0 0 1px rgba(214, 40, 40, 0.35),
+    0 0 28px -6px rgba(214, 40, 40, 0.45);
+}
+
+/* ---- Hairline CAD borders ---- */
+@utility hairline {
+  border: 1px solid var(--border);
+}
+@utility hairline-t {
+  border-top: 1px solid var(--border);
+}
+@utility hairline-b {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Tabular figures wherever numbers must stay column-aligned (specs, stats). */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@layer base {
+  /* Saira Condensed reads better with a hair of negative tracking at weight,
+   * and balanced wrapping keeps the big display headlines from orphaning. */
+  .font-display {
+    text-wrap: balance;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+/* ---- Staggered page-load reveal (hero only — everything below the fold uses
+ *      the scroll reveal instead) ---- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility reveal-load {
+  opacity: 0;
+  animation: rise-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* Honour the OS "reduce motion" setting. Sits outside @layer base on purpose:
+ * unlayered rules beat layered ones in the cascade, so this cannot be
+ * overridden by a utility that happens to come later. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
