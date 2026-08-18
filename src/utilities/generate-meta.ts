@@ -44,10 +44,13 @@ export const generateMeta = async (args: {
       ? doc.title
       : { absolute: siteConfig.title }
 
-  // The card shows the page's own headline, not the SEO title — SEO titles
-  // carry keyword tails and location suffixes that read as clutter at display
-  // size.
-  const cardTitle = doc?.title && doc.title !== 'Home' ? doc.title : siteConfig.tagline
+  // Prefer the SEO title for the share card, minus the "| Tucson, AZ" tail —
+  // that suffix earns its place in a search result but is noise at display
+  // size. The bare document title is too thin to share ("Services"), so it is
+  // only the fallback.
+  const seoTitle = doc?.seo?.title?.split(' | ')[0]?.trim()
+  const cardTitle =
+    seoTitle || (doc?.title && doc.title !== 'Home' ? doc.title : siteConfig.tagline)
   const ogImage = uploaded ?? buildOgImageUrl({ title: cardTitle })
 
   return {
