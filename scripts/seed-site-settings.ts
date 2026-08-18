@@ -33,7 +33,7 @@ runSeed('Seed site settings', async () => {
   await payload.updateGlobal({
     slug: 'site-settings',
     data: settings,
-    ...seedContext,
+    ...seedContext(),
   })
 
   console.log(`  ${settings.businessName} · ${settings.phone} · ${settings.address.city}`)

@@ -47,7 +47,7 @@ runSeed('Seed media', async () => {
         collection: 'media',
         id: existing.docs[0].id,
         data: { alt: photo.alt, caption: photo.caption },
-        ...seedContext,
+        ...seedContext(),
       })
       console.log(`  updated ${photo.file}`)
       continue
@@ -63,7 +63,7 @@ runSeed('Seed media', async () => {
         name: photo.file,
         size: data.byteLength,
       },
-      ...seedContext,
+      ...seedContext(),
     })
     console.log(`  created ${photo.file} (${created.id})`)
   }

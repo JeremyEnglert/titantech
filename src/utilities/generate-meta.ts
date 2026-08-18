@@ -3,24 +3,26 @@ import type { Metadata } from 'next'
 import type { Media, Page, Post, Config } from '../payload-types'
 
 import { mergeOpenGraph } from './merge-open-graph'
+import { buildOgImageUrl } from './og-url'
 import { siteConfig } from './site-config'
 
-const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
-  const siteUrl = siteConfig.url
+/**
+ * An editor-supplied SEO image wins when one is set; otherwise the share card
+ * is generated at /api/og from the page's own title. The starter shipped a
+ * static `/og-image.png` that still said "Payload Tailwind Starter", which is
+ * the kind of thing nobody sees until a link is already posted somewhere.
+ */
+const getUploadedImageURL = (
+  image?: Media | Config['db']['defaultIDType'] | null,
+): string | undefined => {
+  if (!image || typeof image !== 'object' || !('url' in image)) return undefined
 
-  let url = `${siteUrl}${siteConfig.ogImage}`
+  const ogUrl = image.sizes?.og?.url
+  const url = ogUrl ?? image.url
+  if (!url) return undefined
 
-  if (image && typeof image === 'object' && 'url' in image) {
-    const ogUrl = image.sizes?.og?.url
-
-    if (ogUrl) {
-      url = `${siteUrl}${ogUrl}`
-    } else if (image.url) {
-      url = `${siteUrl}${image.url}`
-    }
-  }
-
-  return url
+  // Payload stores media URLs as site-relative paths; OG needs absolute.
+  return url.startsWith('http') ? url : `${siteConfig.url}${url}`
 }
 
 export const generateMeta = async (args: {
@@ -28,36 +30,40 @@ export const generateMeta = async (args: {
 }): Promise<Metadata> => {
   const { doc } = args
 
-  // Fall back to featuredImage for posts when no SEO image is set
-  const seoImage = doc?.seo?.image
   const featuredImage = doc && 'featuredImage' in doc ? doc.featuredImage : undefined
-  const ogImage = getImageURL(seoImage ?? featuredImage ?? null)
+  const uploaded = getUploadedImageURL(doc?.seo?.image ?? featuredImage ?? null)
 
-  // Fall back to excerpt for posts when no SEO description is set
   const excerpt = doc && 'excerpt' in doc ? (doc.excerpt as string | undefined) : undefined
-  const description = doc?.seo?.description || excerpt || ''
+  const description = doc?.seo?.description || excerpt || siteConfig.description
 
-  // SEO title is used verbatim; doc title lets layout template add suffix
+  // SEO title is used verbatim; a bare doc title lets the layout template
+  // append the site name.
   const title = doc?.seo?.title
     ? { absolute: doc.seo.title }
     : doc?.title
       ? doc.title
       : { absolute: siteConfig.title }
 
+  // The card shows the page's own headline, not the SEO title — SEO titles
+  // carry keyword tails and location suffixes that read as clutter at display
+  // size.
+  const cardTitle = doc?.title && doc.title !== 'Home' ? doc.title : siteConfig.tagline
+  const ogImage = uploaded ?? buildOgImageUrl({ title: cardTitle })
+
   return {
     description,
     openGraph: mergeOpenGraph({
       description,
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
       title: typeof title === 'string' ? title : title.absolute,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: doc?.slug && doc.slug !== 'home' ? `/${doc.slug}` : '/',
     }),
     title,
+    twitter: {
+      card: 'summary_large_image',
+      title: typeof title === 'string' ? title : title.absolute,
+      description,
+      images: [ogImage],
+    },
   }
 }

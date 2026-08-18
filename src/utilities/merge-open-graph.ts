@@ -1,14 +1,12 @@
 import type { Metadata } from 'next'
+
 import { siteConfig } from './site-config'
+import { buildOgImageUrl } from './og-url'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
   description: siteConfig.description,
-  images: [
-    {
-      url: `${siteConfig.url}${siteConfig.ogImage}`,
-    },
-  ],
+  images: [{ url: buildOgImageUrl({ title: siteConfig.tagline }), width: 1200, height: 630 }],
   siteName: siteConfig.name,
   title: siteConfig.title,
 }

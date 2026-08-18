@@ -37,8 +37,16 @@ export async function getSeedPayload() {
 /**
  * Every seed write passes this. The collections' afterChange hooks call
  * revalidatePath/revalidateTag, which throw outside a Next request context.
+ *
+ * It MUST be a function returning a fresh object. Payload uses whatever you
+ * pass as `req.context` by reference, and hooks write to it — the
+ * cloud-storage plugin sets `skipCloudStorage` there while it persists upload
+ * metadata. Share one object across calls and that flag survives into the next
+ * write, where the plugin's early return skips the upload entirely: the
+ * document saves, no error is raised, and the file never reaches storage. That
+ * cost an afternoon; do not turn this back into a constant.
  */
-export const seedContext = { context: { disableRevalidate: true } } as const
+export const seedContext = () => ({ context: { disableRevalidate: true } })
 
 export function logStep(message: string) {
   console.log(`  · ${message}`)

@@ -38,12 +38,12 @@ export async function upsertPage(payload: Payload, page: PageSeed) {
 
   if (existing.docs.length > 0) {
     const id = existing.docs[0].id
-    await payload.update({ collection: 'pages', id, data, ...seedContext })
+    await payload.update({ collection: 'pages', id, data, ...seedContext() })
     console.log(`  updated /${page.slug === 'home' ? '' : page.slug} (${id})`)
     return id
   }
 
-  const created = await payload.create({ collection: 'pages', data, ...seedContext })
+  const created = await payload.create({ collection: 'pages', data, ...seedContext() })
   console.log(`  created /${page.slug === 'home' ? '' : page.slug} (${created.id})`)
   return created.id
 }

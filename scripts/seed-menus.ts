@@ -64,11 +64,11 @@ runSeed('Seed menus', async () => {
         collection: 'menus',
         id: existing.docs[0].id,
         data,
-        ...seedContext,
+        ...seedContext(),
       })
       console.log(`  updated ${menu.name} (${menu.items.length} items)`)
     } else {
-      await payload.create({ collection: 'menus', data, ...seedContext })
+      await payload.create({ collection: 'menus', data, ...seedContext() })
       console.log(`  created ${menu.name} (${menu.items.length} items)`)
     }
   }

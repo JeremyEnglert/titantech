@@ -119,12 +119,12 @@ runSeed('Seed forms', async () => {
         id: existing.docs[0].id,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- form-builder block unions aren't expressible in seed data
         data: form as any,
-        ...seedContext,
+        ...seedContext(),
       })
       console.log(`  updated "${form.title}" (${form.fields.length} fields)`)
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- as above
-      const created = await payload.create({ collection: 'forms', data: form as any, ...seedContext })
+      const created = await payload.create({ collection: 'forms', data: form as any, ...seedContext() })
       console.log(`  created "${form.title}" (${created.id})`)
     }
   }
