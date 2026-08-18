@@ -53,7 +53,26 @@ export default function RichText(props: Props) {
       className={cn(
         'payload-richtext',
         enableProse &&
-          'prose prose-invert max-w-none prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-steel-50 prose-p:text-steel-200 prose-p:leading-relaxed prose-a:text-ember prose-a:no-underline hover:prose-a:underline prose-strong:text-steel-50 prose-li:text-steel-200 prose-hr:border-border',
+          cn(
+            'prose prose-invert max-w-none',
+            // Headings carry the display face and an ember rule above them, so
+            // a run of prose reads as a set of labelled sections rather than
+            // one undifferentiated wall of monospace.
+            'prose-headings:font-display prose-headings:uppercase prose-headings:tracking-wide prose-headings:text-steel-50',
+            'prose-h2:mt-14 prose-h2:mb-5 prose-h2:text-3xl prose-h2:font-extrabold prose-h2:leading-none',
+            'prose-h2:border-t prose-h2:border-[color:var(--border)] prose-h2:pt-8',
+            // Order matters: `prose-h2:first:` scopes the reset to an h2 that
+            // is itself the first child. Writing it `first:prose-h2:` instead
+            // targets h2s inside a first-child container, which silently
+            // stripped the rule from every heading rather than just the top one.
+            'prose-h2:first:mt-0 prose-h2:first:border-t-0 prose-h2:first:pt-0',
+            'prose-h3:mt-10 prose-h3:mb-3 prose-h3:text-xl prose-h3:font-bold',
+            'prose-p:text-[15px] prose-p:leading-relaxed prose-p:text-steel-300',
+            'prose-strong:text-steel-50 prose-strong:font-bold',
+            'prose-a:text-ember prose-a:no-underline hover:prose-a:underline',
+            'prose-li:text-steel-300 prose-li:marker:text-ember',
+            'prose-hr:border-[color:var(--border)]',
+          ),
         className,
       )}
       {...rest}

@@ -87,15 +87,6 @@ runSeed('Seed about page', async () => {
         background: 'tint',
         topDivider: true,
       },
-      {
-        blockType: 'richText',
-        width: 'narrow',
-        content: textToLexical(
-          'Who we work with\n\nEngineers, buyers and sourcing teams who need a component that has to be right — aerospace and defense hardware, semiconductor and robotics parts, energy components, and the R&D work that turns into production once it proves out.\n\nWe are equally set up for a single qualifying prototype and for a repeat production order. The programs, fixturing and inspection carry across, so the part you approve is the part you keep receiving.\n\nWhat we need from you\n\nA drawing or a STEP file and a quantity. If a tolerance genuinely matters, call it out — knowing which features are critical lets us put the time where it counts and keep it off the ones that do not.\n\nIf you have not settled on a material, say so. Recommending one is part of the quote.',
-        ),
-        background: 'none',
-        topDivider: true,
-      },
       quoteCtaBand,
     ],
   })

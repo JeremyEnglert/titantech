@@ -108,7 +108,7 @@ runSeed('Seed services page', async () => {
         blockType: 'richText',
         width: 'narrow',
         content: textToLexical(
-          'Tolerances\n\nWe hold to ±0.0005" where a drawing calls for it. Not every feature needs that, and quoting a whole component at its tightest tolerance is how a shop ends up expensive for no reason — so call out the dimensions that are critical and we will put the time there.\n\nInspection happens in-house alongside programming and machining, which is what lets us catch a problem while the setup is still on the machine.\n\nWhat to send\n\nA drawing or a STEP file and a quantity is enough to start. If the component has a critical fit, a surface finish requirement, or a material you have already qualified, include it — those are the constraints that change how a part is programmed and fixtured.',
+          '## Tolerances\n\nWe hold to ±0.0005" where a drawing calls for it. Not every feature needs that, and quoting a whole component at its tightest tolerance is how a shop ends up expensive for no reason — so call out the dimensions that are critical and we will put the time there.\n\nInspection happens in-house alongside programming and machining, which is what lets us catch a problem while the setup is still on the machine.\n\n## What to send\n\nA drawing or a STEP file and a quantity is enough to start. If the component has a critical fit, a surface finish requirement, or a material you have already qualified, include it — those are the constraints that change how a part is programmed and fixtured.\n\nIf you have not settled on a material, say so. Recommending one is part of the quote.'
         ),
         background: 'none',
         topDivider: true,
