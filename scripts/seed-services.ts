@@ -38,7 +38,7 @@ runSeed('Seed services page', async () => {
     meta: {
       title: '5-Axis CNC Machining, Milling & Turning Services | Tucson, AZ',
       description:
-        'Advanced 5-axis CNC machining, 3-axis and 3+2 milling, CNC turning, laser engraving and part marking. Complex, tight-tolerance components from prototype to production in Tucson, AZ.',
+        'Advanced 5-axis CNC machining, 3-axis milling, CNC turning, laser engraving and part marking. Complex, tight-tolerance components from prototype to production in Tucson, AZ.',
     },
     content: [
       {
@@ -46,7 +46,7 @@ runSeed('Seed services page', async () => {
         eyebrow: 'Capabilities',
         title: 'What we machine',
         intro:
-          'Precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components — programmed, cut and inspected in-house.',
+          'Precision 3-axis and 5-axis CNC milling and CNC turning for complex, tight-tolerance components — programmed, cut and inspected in-house.',
         background: 'none',
         topDivider: false,
       },
@@ -108,7 +108,7 @@ runSeed('Seed services page', async () => {
         blockType: 'richText',
         width: 'narrow',
         content: textToLexical(
-          '## Tolerances\n\nWe hold to ±0.0005" where a drawing calls for it. Not every feature needs that, and quoting a whole component at its tightest tolerance is how a shop ends up expensive for no reason — so call out the dimensions that are critical and we will put the time there.\n\nInspection happens in-house alongside programming and machining, which is what lets us catch a problem while the setup is still on the machine.\n\n## What to send\n\nA drawing or a STEP file and a quantity is enough to start. If the component has a critical fit, a surface finish requirement, or a material you have already qualified, include it — those are the constraints that change how a part is programmed and fixtured.\n\nIf you have not settled on a material, say so. Recommending one is part of the quote.'
+          '## Tolerances\n\nWe hold tight tolerances where a drawing calls for them. Not every feature needs one, and quoting a whole component at its tightest tolerance is how a shop ends up expensive for no reason — so call out the dimensions that are critical and we will put the time there.\n\nInspection happens in-house alongside programming and machining, which is what lets us catch a problem while the setup is still on the machine.\n\n## What to send\n\nA drawing or a STEP file and a quantity is enough to start. If the component has a critical fit, a surface finish requirement, or a material you have already qualified, include it — those are the constraints that change how a part is programmed and fixtured.\n\nIf you have not settled on a material, say so. Recommending one is part of the quote.'
         ),
         background: 'none',
         topDivider: true,

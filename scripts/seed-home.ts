@@ -35,7 +35,7 @@ runSeed('Seed home page', async () => {
     meta: {
       title: 'Titantech CNC — 5-Axis Precision CNC Machining | Tucson, AZ',
       description:
-        'Precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components to ±0.0005". Prototype to production in stainless, aluminum, tool steels, titanium and engineering plastics.',
+        'Precision 3-axis and 5-axis CNC milling and CNC turning for complex, tight-tolerance components. Prototype to production in stainless, aluminum, tool steels, titanium and engineering plastics.',
     },
     content: [
       {
@@ -45,14 +45,14 @@ runSeed('Seed home page', async () => {
         titleAccent: 'Precision',
         titleAfter: 'machined.',
         body: textToLexical(
-          'TitanTech CNC provides precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components. From one-off prototypes to repeat production, we machine demanding geometries across stainless steels, aluminum, tool steels, engineering plastics and other advanced materials.',
+          'TitanTech CNC provides precision 3-axis and 5-axis CNC milling and CNC turning for complex, tight-tolerance components. From one-off prototypes to repeat production, we machine demanding geometries across stainless steels, aluminum, tool steels, engineering plastics and other advanced materials.',
         ),
         // The capability strip the client specified. These read as a scannable
         // row rather than labelled stats, so most carry no label.
         specs: [
           { value: '5-Axis Machining' },
           { value: 'CNC Turning' },
-          { label: 'Tolerances', value: '±.0005', accentSuffix: '"' },
+          { value: 'Tight Tolerances' },
           { value: 'Quick-Turn' },
         ],
         buttons: [

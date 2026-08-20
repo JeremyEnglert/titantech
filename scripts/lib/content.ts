@@ -11,8 +11,8 @@ import { textToLexical } from './text-to-lexical'
  * prototype-to-production, quick-turn.
  *
  * Every factual claim traces to something the client supplied: the equipment
- * list (UMC-500SS, VF-2SS, TL-1P), the material grades, the industries, and
- * ±0.0005". Nothing beyond that is invented — no certifications, capacities,
+ * list (UMC-500SS, VF-2SS, TL-1P), the material grades and the
+ * industries. Nothing beyond that is invented — no certifications, capacities,
  * client names or years in business.
  */
 
@@ -38,10 +38,10 @@ export const services: ServiceSeed[] = [
   {
     anchor: 'cnc-milling',
     icon: 'mill',
-    title: '3-Axis & 3+2 CNC Milling',
+    title: '3-Axis CNC Milling',
     short:
       'High-speed vertical milling for brackets, plates, housings, manifolds and fixtures — accurate, repeatable, production-ready.',
-    long: 'High-speed vertical milling on our Haas VF-2SS, with 3+2 positioning for features that sit off the primary face. Brackets, plates, housings, manifolds, fixtures and adapter blocks — the precision components a machine, an assembly or a line cannot run without.\n\nWe program, cut and inspect every job in-house, so what we quote is what we run. That matters most on repeat work: the second batch comes off the same program, on the same setup, to the same numbers as the first.',
+    long: 'High-speed vertical milling on our Haas VF-2SS. Brackets, plates, housings, manifolds, fixtures and adapter blocks — the precision components a machine, an assembly or a line cannot run without.\n\nWe program, cut and inspect every job in-house, so what we quote is what we run. That matters most on repeat work: the second batch comes off the same program, on the same setup, to the same numbers as the first.',
   },
   {
     anchor: 'cnc-turning',
@@ -116,7 +116,7 @@ export const equipment = [
     stem: 'haas-vf-2ss-mill',
     title: 'Haas VF-2SS',
     detail:
-      'High-speed vertical CNC milling. Fast, repeatable 3-axis and 3+2 work across prototypes and production runs.',
+      'High-speed vertical CNC milling. Fast, repeatable 3-axis work across prototypes and production runs.',
   },
   {
     stem: 'haas-tl-1p-lathe',
@@ -145,7 +145,9 @@ export const valuePropItems = [
 ].map((item) => ({ ...item, body: textToLexical(item.body) }))
 
 export const statItems = [
-  { label: 'Tolerance', value: '±.0005', accentSuffix: '"' },
+  // The only word in a grid of figures, so it is set uppercase like every
+  // other display-face word on the site rather than left in title case.
+  { label: 'Tolerances', value: 'TIGHT', accentSuffix: '' },
   { label: 'Axes', value: '5', accentSuffix: '' },
   { label: 'Experience', value: '20', accentSuffix: '+' },
   { label: 'Materials', value: '15', accentSuffix: '+' },

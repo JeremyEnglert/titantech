@@ -258,7 +258,7 @@ export async function generateDefaultOG({
             color: STEEL_300,
           }}
         >
-          5-AXIS · TURNING · ±.0005&quot; · TUCSON, AZ
+          5-AXIS · MILLING · TURNING · TUCSON, AZ
         </div>
       </div>
     ),

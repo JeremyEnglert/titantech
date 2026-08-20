@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'Titantech CNC',
   title: 'Titantech CNC — 5-Axis Precision CNC Machining | Tucson, AZ',
   description:
-    'Precision 3-axis, 3+2 and 5-axis CNC milling and CNC turning for complex, tight-tolerance components to ±0.0005". Prototype to production in stainless, aluminum, tool steels, titanium and engineering plastics.',
+    'Precision 3-axis and 5-axis CNC milling and CNC turning for complex, tight-tolerance components. Prototype to production in stainless, aluminum, tool steels, titanium and engineering plastics.',
   /** Short enough to set as display type on a share card. */
   tagline: 'Complex parts. Precision machined.',
   // One variable, not two. The starter read NEXT_PUBLIC_SITE_URL here while

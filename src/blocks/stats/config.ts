@@ -52,7 +52,7 @@ export const StatsBlock: Block = {
                       type: 'text',
                       label: 'Value',
                       required: true,
-                      admin: { placeholder: '±.0005' },
+                      admin: { placeholder: '20' },
                     },
                     {
                       name: 'accentSuffix',

@@ -86,7 +86,7 @@ const forms = [
         options: [
           { label: 'Not sure', value: 'unsure' },
           { label: '5-axis machining', value: '5-axis' },
-          { label: '3-axis / 3+2 milling', value: 'milling' },
+          { label: '3-axis milling', value: 'milling' },
           { label: 'CNC turning', value: 'turning' },
           { label: 'Laser engraving / part marking', value: 'marking' },
         ],
