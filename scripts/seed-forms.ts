@@ -22,6 +22,9 @@ const forms = [
       {
         emailTo: notifyTo,
         emailFrom: notifyFrom,
+        // Reply goes to the person who filled the form, not back to the
+        // sending address — quotes@ is send-only, so a reply there vanishes.
+        replyTo: '{{email}}',
         subject: 'Website contact — {{name}}',
         message: notificationBody,
       },
@@ -45,6 +48,7 @@ const forms = [
       {
         emailTo: notifyTo,
         emailFrom: notifyFrom,
+        replyTo: '{{email}}',
         subject: 'Quote request — {{name}} ({{company}})',
         message: notificationBody,
       },
