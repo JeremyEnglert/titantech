@@ -17,10 +17,17 @@ runSeed('Seed services page', async () => {
 
   // Pair each capability with the machine that actually performs it, rather
   // than decorating every section with the same photo.
+  // Every service section needs a photograph: mediaWithText reserves the image
+  // column regardless, so a missing one renders as an "Image placeholder" panel
+  // rather than collapsing. The first three are the client's own machines; the
+  // last three are licensed stock standing in until real ones exist.
   const byAnchor: Record<string, string | null> = {
     'five-axis-machining': await findMediaId(payload, photoStems.fiveAxis),
     'cnc-milling': await findMediaId(payload, photoStems.mill),
     'cnc-turning': await findMediaId(payload, photoStems.lathe),
+    'laser-engraving': await findMediaId(payload, photoStems.laser),
+    'prototype-to-production': await findMediaId(payload, photoStems.parts),
+    'difficult-materials': await findMediaId(payload, photoStems.stock),
   }
 
   const equipmentItems = []

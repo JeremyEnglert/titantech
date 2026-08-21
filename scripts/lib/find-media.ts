@@ -30,4 +30,8 @@ export const photoStems = {
   fiveAxis: 'haas-umc-500ss',
   lathe: 'haas-tl-1p-lathe',
   mill: 'haas-vf-2ss-mill',
+  // Licensed stock rather than this shop's own floor — see seed-media.ts.
+  laser: 'laser-marking',
+  parts: 'machined-components',
+  stock: 'metal-stock',
 } as const

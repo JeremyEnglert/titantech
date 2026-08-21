@@ -53,13 +53,27 @@ export const generateMeta = async (args: {
     seoTitle || (doc?.title && doc.title !== 'Home' ? doc.title : siteConfig.tagline)
   const ogImage = uploaded ?? buildOgImageUrl({ title: cardTitle })
 
+  // The same pages answer on the apex, on www, and on the project's
+  // .vercel.app alias. Only the first is canonical; without this tag the other
+  // two are indexable duplicates competing with it. Relative is enough —
+  // metadataBase in the root layout resolves it against siteConfig.url.
+  const isPost = Boolean(doc && 'excerpt' in doc)
+  const pathname = !doc?.slug
+    ? '/'
+    : isPost
+      ? `/posts/${doc.slug}`
+      : doc.slug === 'home'
+        ? '/'
+        : `/${doc.slug}`
+
   return {
+    alternates: { canonical: pathname },
     description,
     openGraph: mergeOpenGraph({
       description,
       images: [{ url: ogImage, width: 1200, height: 630 }],
       title: typeof title === 'string' ? title : title.absolute,
-      url: doc?.slug && doc.slug !== 'home' ? `/${doc.slug}` : '/',
+      url: pathname,
     }),
     title,
     twitter: {
